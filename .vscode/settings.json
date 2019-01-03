@@ -1,3 +1,10 @@
 {
-  "python.pythonPath": ".venv/skill_env/bin/python"
+  "python.pythonPath": ".venv/skill_env/bin/python",
+  "python.venvFolders": [
+    "${rootPath}",
+    "envs",
+    ".pyenv",
+    ".direnv",
+    ".venv"
+  ]
 }
