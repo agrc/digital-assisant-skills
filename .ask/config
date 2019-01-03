@@ -1,0 +1,29 @@
+{
+  "deploy_settings": {
+    "default": {
+      "skill_id": "amzn1.ask.skill.d3b678f4-a287-4df6-a4b2-cc05246c9a56",
+      "resources": {
+        "lambda": [
+          {
+            "functionName": "",
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "runtime": "python3.6",
+            "handler": "hello_world.handler"
+          }
+        ],
+        "manifest": {
+          "eTag": "f0843067f98a874f9415748d01f831bb"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "4081ac95c6336fbcbbe9ec6ca4e9d4bb"
+          }
+        }
+      },
+      "was_cloned": false,
+      "merge": {}
+    }
+  }
+}
