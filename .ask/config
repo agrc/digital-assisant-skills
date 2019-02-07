@@ -24,6 +24,21 @@
       },
       "was_cloned": false,
       "merge": {}
+    },
+    "state-of-utah": {
+      "skill_id": "amzn1.ask.skill.cd04a2a7-a437-4f9a-bda9-1543fe86e7da",
+      "was_cloned": false,
+      "merge": {},
+      "resources": {
+        "manifest": {
+          "eTag": "d2738cfa63598385c7eeba6a91fe8f0d"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "4622e5c1718b31f3d8763d7104ce8684"
+          }
+        }
+      }
     }
   }
 }
