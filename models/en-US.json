@@ -20,20 +20,45 @@
                     "samples": []
                 },
                 {
-                    "name": "HelloWorldIntent",
+                    "name": "ElectedOfficialsIntent",
                     "slots": [],
                     "samples": [
-                        "how are you",
-                        "say hi world",
-                        "say hi",
-                        "hi",
-                        "hello",
-                        "say hello world",
-                        "say hello"
+                        "Who are my state elected officials"
+                    ]
+                },
+                {
+                    "name": "ElectedOfficialsDetailsIntent",
+                    "slots": [
+                        {
+                            "name": "official",
+                            "type": "ELECTED_OFFICIAL_TYPES"
+                        }
+                    ],
+                    "samples": [
+                        "{official}",
+                        "tell me more about my {official}",
+                        "I want to know more about my {official}",
+                        "my {official}"
                     ]
                 }
             ],
-            "types": []
+            "types": [
+                {
+                    "name": "ELECTED_OFFICIAL_TYPES",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "senator"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "representative"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     }
 }
