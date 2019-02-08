@@ -1,2 +1,2 @@
-flask-ask
+flask
 -r ./lambda/py/requirements.txt
