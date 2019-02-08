@@ -1,0 +1,9 @@
+{
+  "skillId": "amzn1.ask.skill.cd04a2a7-a437-4f9a-bda9-1543fe86e7da",
+  "locale": "en-US",
+  "type": "text",
+  "userInput": [
+    "open utah voting assistant",
+    "!quit"
+  ]
+}
