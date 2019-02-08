@@ -10,7 +10,7 @@
               "custom/default"
             ],
             "runtime": "python3.6",
-            "handler": "hello_world.handler"
+            "handler": "vote_skill.handler"
           }
         ],
         "manifest": {
@@ -31,7 +31,7 @@
       "merge": {},
       "resources": {
         "manifest": {
-          "eTag": "d2738cfa63598385c7eeba6a91fe8f0d"
+          "eTag": "1716cfc1aa6f7d4426acc5c460a5b484"
         },
         "interactionModel": {
           "en-US": {

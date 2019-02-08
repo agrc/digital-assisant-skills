@@ -17,6 +17,7 @@ Initialize the cli with `ask init` and follow the instructions to authorize the 
 ### python 3
 
 Execute `../alexa-vote-skill/hooks/post_new_hook.sh alex-vote-skill true` to create the python virtual environment. _run from one level outside the alexa-vote-skill directory_
+Execute `alexa-vote-skill/hooks/post_new_hook.sh alex-vote-skill true` to create the python virtual environment. _run from one level outside the alexa-vote-skill directory_
 
 To activate the virtual environment outside of VS Code run `source ./.venv/skill_env/bin/activate`. Use `deactivate` to get out of the virtual environment.
 
@@ -32,7 +33,7 @@ Use the command pallet to select `Python: Select Interpreter`. Select the python
 }
 ```
 
-Start the flask server that is acting as a lambda function `python lambda/py/hello_world.py`
+Start the flask server that is acting as a lambda function `python lambda/py/vote_skill.py`
 
 ### localhost tunnel
 
