@@ -1,43 +1,32 @@
 {
   "deploy_settings": {
     "default": {
-      "skill_id": "amzn1.ask.skill.d3b678f4-a287-4df6-a4b2-cc05246c9a56",
-      "resources": {
-        "lambda": [
-          {
-            "functionName": "",
-            "alexaUsage": [
-              "custom/default"
-            ],
-            "runtime": "python3.6",
-            "handler": "vote_skill.skill_handler"
-          }
-        ],
-        "manifest": {
-          "eTag": "f0843067f98a874f9415748d01f831bb"
-        },
-        "interactionModel": {
-          "en-US": {
-            "eTag": "4081ac95c6336fbcbbe9ec6ca4e9d4bb"
-          }
-        }
-      },
-      "was_cloned": false,
-      "merge": {}
-    },
-    "state-of-utah": {
       "skill_id": "amzn1.ask.skill.cd04a2a7-a437-4f9a-bda9-1543fe86e7da",
       "was_cloned": false,
       "merge": {},
       "resources": {
         "manifest": {
-          "eTag": "1dea5da7035aec9827963ce190dc28f8"
+          "eTag": "ddbd0b531adc6f7090196a889acc69d5"
         },
         "interactionModel": {
           "en-US": {
             "eTag": "4622e5c1718b31f3d8763d7104ce8684"
           }
-        }
+        },
+        "lambda": [
+          {
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "arn": "arn:aws:lambda:us-west-2:215627867010:function:ask-voting-assistant-utah",
+            "awsRegion": "us-west-2",
+            "codeUri": "lambda/py/lambda_upload",
+            "functionName": "ask-voting-assistant-utah",
+            "handler": "vote_skill.skill_handler",
+            "revisionId": "6e838044-f1ba-4644-856c-45914999a6f3",
+            "runtime": "python3.6"
+          }
+        ]
       }
     }
   }
