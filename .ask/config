@@ -6,11 +6,11 @@
       "merge": {},
       "resources": {
         "manifest": {
-          "eTag": "ddbd0b531adc6f7090196a889acc69d5"
+          "eTag": "3148abb7f65edf0edfb8b4e74bfc3584"
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "4622e5c1718b31f3d8763d7104ce8684"
+            "eTag": "66db2a3a962c05962c6b0b5aa8c9fc86"
           }
         },
         "lambda": [
@@ -18,12 +18,12 @@
             "alexaUsage": [
               "custom/default"
             ],
-            "arn": "arn:aws:lambda:us-west-2:215627867010:function:ask-voting-assistant-utah",
+            "arn": "arn:aws:lambda:us-west-2:215627867010:function:ask-voting-assistant-dev-steve",
             "awsRegion": "us-west-2",
             "codeUri": "lambda/py/lambda_upload",
-            "functionName": "ask-voting-assistant-utah",
+            "functionName": "ask-voting-assistant-dev-steve",
             "handler": "vote_skill.skill_handler",
-            "revisionId": "6e838044-f1ba-4644-856c-45914999a6f3",
+            "revisionId": "40a9f6c0-cca4-46a7-a903-11a8aa377f65",
             "runtime": "python3.6"
           }
         ]
