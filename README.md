@@ -92,9 +92,7 @@ Speak or type `alexa open utah voting assistant` into the Alexa Simulator.
 
 ### documetation
 
-[Flask-Ask: A New Python Framework for Rapid Alexa Skills Kit Development](https://developer.amazon.com/blogs/post/Tx14R0IYYGH3SKT/Flask-Ask-A-New-Python-Framework-for-Rapid-Alexa-Skills-Kit-Development)
-
-### Links
+#### Links
 
 - [alexa developer console](https://developer.amazon.com/alexa/console)
 - [developer forums](https://forums.developer.amazon.com)
