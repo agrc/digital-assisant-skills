@@ -6,11 +6,11 @@
       "merge": {},
       "resources": {
         "manifest": {
-          "eTag": "3148abb7f65edf0edfb8b4e74bfc3584"
+          "eTag": "772db3d153d0c05c77537ce2c9a904c6"
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "66db2a3a962c05962c6b0b5aa8c9fc86"
+            "eTag": "dc76c4f3ad741a10b3c5624f4f928ac4"
           }
         },
         "lambda": [
@@ -23,7 +23,7 @@
             "codeUri": "lambda/py/lambda_upload",
             "functionName": "ask-voting-assistant-dev-steve",
             "handler": "vote_skill.skill_handler",
-            "revisionId": "40a9f6c0-cca4-46a7-a903-11a8aa377f65",
+            "revisionId": "44969041-d9de-4234-89cb-51a9c6be8daa",
             "runtime": "python3.6"
           }
         ]
