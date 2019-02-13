@@ -25,34 +25,57 @@
                 },
                 {
                     "name": "AMAZON.StopIntent",
-                    "samples": []
-                },
-                {
-                    "name": "ElectedOfficialsIntent",
-                    "slots": [],
                     "samples": [
-                        "Who are my state elected officials"
+                        "Exit",
+                        "Stop"
                     ]
                 },
                 {
-                    "name": "ElectedOfficialsDetailsIntent",
+                    "name": "DistrictIntent",
+                    "slots": [],
+                    "samples": [
+                        "What is my district",
+                        "What district am I in",
+                        "What senate district am I in",
+                        "What is my senate district",
+                        "What house district am I in",
+                        "What is my house district"
+                    ]
+                },
+                {
+                    "name": "ElectedOfficialsIntent",
                     "slots": [
                         {
-                            "name": "official",
-                            "type": "ELECTED_OFFICIAL_TYPES"
+                            "name": "house",
+                            "type": "HOUSE_TYPES"
                         }
                     ],
                     "samples": [
-                        "{official}",
-                        "tell me more about my {official}",
-                        "I want to know more about my {official}",
-                        "my {official}"
+                        "who represents me",
+                        "who is my {house}",
+                        "who are my elected officials",
+                        "who are my state elected officials"
+                    ]
+                },
+                {
+                    "name": "ElectedOfficialDetailsIntent",
+                    "slots": [
+                        {
+                            "name": "house",
+                            "type": "HOUSE_TYPES"
+                        }
+                    ],
+                    "samples": [
+                        "{house}",
+                        "tell me more about my {house}",
+                        "I want to know more about my {house}",
+                        "my {house}"
                     ]
                 }
             ],
             "types": [
                 {
-                    "name": "ELECTED_OFFICIAL_TYPES",
+                    "name": "HOUSE_TYPES",
                     "values": [
                         {
                             "name": {
