@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# * coding: utf8 *
+'''
+vote_skill.py
+A module that tells you about legislative stuff
+'''
+
+
 import logging
 import os
 import sys
@@ -15,19 +23,17 @@ from ask_sdk_model.services import ServiceException
 from ask_sdk_model.ui import AskForPermissionsConsentCard
 from flask import Flask, jsonify, request
 
-sb = CustomSkillBuilder(api_client=DefaultApiClient())
+SB = CustomSkillBuilder(api_client=DefaultApiClient())
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
+APP = Flask(__name__)
 
-app = Flask(__name__)
+STREET = '316 east south temple'
+CITY = 'salt lake city'
 
-street = '316 east south temple'
-city = 'salt lake city'
-postal_code = 84109
-
-permissions = ['alexa::devices:all:address:full:read']
+PERMISSIONS = ['alexa::devices:all:address:full:read']
 
 WELCOME = 'Welcome to the Utah Voting Information Assistant. Ask your question or ask for help to be guided through the questions I can answer.'
 WHAT_DO_YOU_WANT = 'Ask your question or ask for help to be guided through the questions I can answer.'
@@ -48,7 +54,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
         if not (req_envelope.context.system.user.permissions and req_envelope.context.system.user.permissions.consent_token):
             response_builder.speak(NOTIFY_MISSING_PERMISSIONS)
-            response_builder.set_card(AskForPermissionsConsentCard(permissions=permissions))
+            response_builder.set_card(AskForPermissionsConsentCard(permissions=PERMISSIONS))
 
             return response_builder.response
 
@@ -58,8 +64,8 @@ class LaunchRequestHandler(AbstractRequestHandler):
             device_addr_client = service_client_fact.get_device_address_service()
             addr = device_addr_client.get_full_address(device_id)
 
-            addr.address_line1 = street
-            addr.city = city
+            addr.address_line1 = STREET
+            addr.city = CITY
 
             if addr.address_line1 is None or (addr.city and addr.postal_code is None):
                 response_builder.speak(NO_ADDRESS)
@@ -69,11 +75,15 @@ class LaunchRequestHandler(AbstractRequestHandler):
             response_builder.speak(ERROR)
 
             return response_builder.response
-        except Exception as e:
-            raise e
+        except Exception as exception:
+            raise exception
 
         session_attributes = handler_input.attributes_manager.session_attributes
-        session_attributes['address'] = {'street': addr.address_line1, 'zone': addr.city or addr.postal_code}
+        session_attributes['address'] = {
+            'street': addr.address_line1,
+            'zone': addr.city or addr.postal_code
+        }
+
 
         handler_input.response_builder \
             .speak(WELCOME) \
@@ -136,7 +146,7 @@ class ElectedOfficialsHandler(AbstractRequestHandler):
         #: check for le service cache
         session_attributes = handler_input.attributes_manager.session_attributes
         if 'legislators' not in session_attributes:
-            logger.info('cache miss: legislators')
+            LOGGER.info('cache miss: legislators')
             legislators = get_or_cache_legislators(senate, house)
             session_attributes['legislators'] = legislators
 
@@ -146,12 +156,13 @@ class ElectedOfficialsHandler(AbstractRequestHandler):
         def deabbrivate(party_abbr):
             if party_abbr == 'D':
                 return 'democrat'
-            elif party_abbr == 'R':
-                return 'republican'
-            else:
-                logger.warn('unknown political party: %s', party_abbr)
 
-                return party_abbr
+            if party_abbr == 'R':
+                return 'republican'
+
+            LOGGER.warning('unknown political party: %s', party_abbr)
+
+            return party_abbr
 
         senator_party = deabbrivate(senator['party'])
         senator_name = senator['formatName']
@@ -195,7 +206,7 @@ class ElectedOfficialDetailHandler(AbstractRequestHandler):
 
         session_attributes = handler_input.attributes_manager.session_attributes
         if 'legislators' not in session_attributes:
-            logger.info('cache miss: legislators')
+            LOGGER.info('cache miss: legislators')
             legislators = get_or_cache_legislators(senate, house)
             session_attributes['legislators'] = legislators
 
@@ -207,7 +218,11 @@ class ElectedOfficialDetailHandler(AbstractRequestHandler):
         elif official == 'senator':
             data = senator
 
-        response_builder.speak('{} is a {} with an education in {}. They became a {} on {}'.format(data['formatName'], data['profession'], data['education'], official, data['serviceStart']))
+        response_builder.speak(
+            '{} is a {} with an education in {}. They became a {} on {}'.format(
+                data['formatName'], data['profession'], data['education'], official, data['serviceStart']
+            )
+        )
 
         return response_builder.response
 
@@ -255,9 +270,9 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
         return True
 
     def handle(self, handler_input, exception):
-        logger.error(exception, exc_info=True)
+        LOGGER.error(exception, exc_info=True)
 
-        speech = "Sorry, there was some problem. Please try again!!"
+        speech = 'Sorry, there was some problem. Please try again!!'
         handler_input.response_builder.speak(speech).ask(speech)
 
         return handler_input.response_builder.response
@@ -266,49 +281,49 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
 class RequestLogger(AbstractRequestInterceptor):
 
     def process(self, handler_input):
-        logger.debug("Request Envelope: {}".format(handler_input.request_envelope))
+        LOGGER.debug('Request Envelope: %r', handler_input.request_envelope)
 
 
 class ResponseLogger(AbstractResponseInterceptor):
 
     def process(self, handler_input, response):
-        logger.debug("Response: {}".format(response))
+        LOGGER.debug('Response: %r', response)
 
 
-class WebApi(object):
+class WebApi():
 
     def __init__(self, api_key):
         self._api_key = api_key
-        self._url_template = "https://api.mapserv.utah.gov/api/v1/{}/{}/{}"
+        self._url_template = 'https://api.mapserv.utah.gov/api/v1/{}/{}/{}'
 
-    def search(self, table, fields, options={}):
-        options["apiKey"] = self._api_key
+    def search(self, table, fields, **options):
+        options['apiKey'] = self._api_key
 
         return requests.get(self._url_template.format('search', table, ','.join(fields)), params=options)
 
-    def geocode(self, street, zone, options={}):
-        options["apiKey"] = self._api_key
+    def geocode(self, street, zone, **options):
+        options['apiKey'] = self._api_key
 
         return requests.get(self._url_template.format('geocode', street, zone), params=options)
 
 
-@app.route('/', methods=['POST'])
+@APP.route('/', methods=['POST'])
 def main():
-    Serializer = DefaultSerializer()
-    request_envelope = Serializer.deserialize(request.data, RequestEnvelope)
-    response_envelope = skill_obj.invoke(request_envelope=request_envelope, context=None)
+    serializer = DefaultSerializer()
+    request_envelope = serializer.deserialize(request.data, RequestEnvelope)
+    response_envelope = SKILL.invoke(request_envelope=request_envelope, context=None)
 
-    return jsonify(Serializer.serialize(response_envelope))
+    return jsonify(serializer.serialize(response_envelope))
 
 
-@app.route('/', methods=['GET'])
+@APP.route('/', methods=['GET'])
 def development():
     return 'development server/ngrok connected'
 
 
-def get_resolved_value(request, slot_name):
+def get_resolved_value(request_envelope, slot_name):
     try:
-        return request.intent.slots[slot_name].value
+        return request_envelope.intent.slots[slot_name].value
     except (AttributeError, ValueError, KeyError, IndexError):
         return None
 
@@ -316,51 +331,54 @@ def get_resolved_value(request, slot_name):
 def supports_display(handler_input):
     try:
         if hasattr(handler_input.request_envelope.context.system.device.supported_interfaces, 'display'):
-            return (handler_input.request_envelope.context.system.device.supported_interfaces.display is not None)
-    except:
+            return handler_input.request_envelope.context.system.device.supported_interfaces.display is not None
+    except AttributeError:
         return False
+
+    return False
 
 
 def get_or_cache_location(session_attributes):
     if 'location' in session_attributes:
-        logger.info('cache hit: location')
+        LOGGER.info('cache hit: location')
 
         return session_attributes['location']['x'], session_attributes['location']['y'], None
 
-    logger.info('cache miss: location')
+    LOGGER.info('cache miss: location')
 
     client = WebApi('AGRC-Uptime')
 
     address = session_attributes['address']
 
-    r = client.geocode(address['street'], address['zone'])
-    response = SimpleNamespace(**r.json())
+    response = client.geocode(address['street'], address['zone'])
+    response_data = SimpleNamespace(**response.json())
 
-    if r.status_code == 400 or response.status == 400:
-        logger.warning('geocode issue: %r', response)
+    if response.status_code == 400 or response_data.status == 400:
+        LOGGER.warning('geocode issue: %r', response_data)
 
-        return None, None, response.message
-    elif r.status_code is not 200 or response.status is not 200:
-        logger.warning('geocode issue: %r', response)
+        return None, None, response_data.message
+
+    if response.status_code != 200 or response_data.status != 200:
+        LOGGER.warning('geocode issue: %r', response_data)
 
         return None, None, AGRC_API_ERROR
 
     result = response.result
-    x = result['location']['x']
-    y = result['location']['y']
+    x_coord = result['location']['x']
+    y_coord = result['location']['y']
 
     session_attributes['location'] = result['location']
 
-    return x, y, None
+    return x_coord, y_coord, None
 
 
 def get_or_cache_districts(session_attributes):
     if 'districts' in session_attributes:
-        logger.info('cache hit: districts')
+        LOGGER.info('cache hit: districts')
 
         return session_attributes['districts']['senate'], session_attributes['districts']['house'], None
 
-    logger.info('cache miss: districts')
+    LOGGER.info('cache miss: districts')
 
     client = WebApi('AGRC-Uptime')
 
@@ -368,20 +386,21 @@ def get_or_cache_districts(session_attributes):
 
     #: query api for districts
     options = {'geometry': 'point:[{},{}]'.format(location['x'], location['y'])}
-    r = client.search('sgid10.political.officialslookup', ['repdist', 'sendist'], options)
+    response = client.search('sgid10.political.officialslookup', ['repdist', 'sendist'], **options)
 
-    response = SimpleNamespace(**r.json())
+    response_data = SimpleNamespace(**response.json())
 
-    if r.status_code == 400 or response.status == 400:
-        logger.warning('district query issue: %r', response)
+    if response.status_code == 400 or response_data.status == 400:
+        LOGGER.warning('district query issue: %r', response_data)
 
-        return None, None, response.message
-    elif r.status_code is not 200 or response.status is not 200:
-        logger.warning('district query issue: %r', response)
+        return None, None, response_data.message
+
+    if response.status_code != 200 or response_data.status != 200:
+        LOGGER.warning('district query issue: %r', response_data)
 
         return None, None, AGRC_API_ERROR
 
-    result = response.result[0]
+    result = response_data.result[0]
     result = SimpleNamespace(**result)
 
     senate = result.attributes['sendist']
@@ -396,8 +415,8 @@ def get_or_cache_legislators(senate, house):
     #: query le service
     parent_directory = os.path.abspath(os.path.dirname(__file__))
     legislators_json = os.path.join(parent_directory, 'mock_data', 'le.utah.gov', 'legislators_endpoint.json')
-    logger.debug('parent directory: {}'.format(parent_directory))
-    logger.debug('json file: {}'.format(legislators_json))
+    LOGGER.debug('parent directory: %s', parent_directory)
+    LOGGER.debug('json file: %s', legislators_json)
 
     all_legislators = None
     with open(legislators_json) as json_file:
@@ -407,32 +426,30 @@ def get_or_cache_legislators(senate, house):
     senator = [item for item in all_legislators if item['district'] == str(senate) and item['house'] == 'S'][0]
     representative = [item for item in all_legislators if item['district'] == str(house) and item['house'] == 'H'][0]
 
-    return {
-        'senator': senator,
-        'representative': representative
-    }
+    return {'senator': senator, 'representative': representative}
 
-sb.add_request_handler(LaunchRequestHandler())
-sb.add_request_handler(DistrictHandler())
-sb.add_request_handler(ElectedOfficialsHandler())
-sb.add_request_handler(ElectedOfficialDetailHandler())
-sb.add_request_handler(HelpIntentHandler())
-sb.add_request_handler(ExitIntentHandler())
-sb.add_request_handler(SessionEndedRequestHandler())
 
-sb.add_exception_handler(CatchAllExceptionHandler())
+SB.add_request_handler(LaunchRequestHandler())
+SB.add_request_handler(DistrictHandler())
+SB.add_request_handler(ElectedOfficialsHandler())
+SB.add_request_handler(ElectedOfficialDetailHandler())
+SB.add_request_handler(HelpIntentHandler())
+SB.add_request_handler(ExitIntentHandler())
+SB.add_request_handler(SessionEndedRequestHandler())
+
+SB.add_exception_handler(CatchAllExceptionHandler())
 
 # Add response interceptor to the skill.
-# sb.add_global_response_interceptor(CacheResponseForRepeatInterceptor())
-sb.add_global_request_interceptor(RequestLogger())
-sb.add_global_response_interceptor(ResponseLogger())
+# SB.add_global_response_interceptor(CacheResponseForRepeatInterceptor())
+SB.add_global_request_interceptor(RequestLogger())
+SB.add_global_response_interceptor(ResponseLogger())
 
-skill_obj = sb.create()
-skill_handler = sb.lambda_handler()
+SKILL = SB.create()
+HANDLER = SB.lambda_handler()
 
 if __name__ == '__main__':
     # if 'ASK_VERIFY_REQUESTS' in os.environ:
     #     verify = str(os.environ.get('ASK_VERIFY_REQUESTS', '')).lower()
     #     if verify == 'false':
-    #         app.config['ASK_VERIFY_REQUESTS'] = False
-    app.run(debug=True)
+    #         APP.config['ASK_VERIFY_REQUESTS'] = False
+    APP.run(debug=True)
