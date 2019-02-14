@@ -10,12 +10,23 @@
             "alexaUsage": [
               "custom/default"
             ],
-            "functionName": "ask-voting-assistant-dev-steve2",
+            "arn": "arn:aws:lambda:us-west-2:215627867010:function:ask-voting-assistant-dev-steve2",
             "awsRegion": "us-west-2",
+            "codeUri": "lambda/py/lambda_upload",
+            "functionName": "ask-voting-assistant-dev-steve2",
             "handler": "vote_skill.HANDLER",
+            "revisionId": "421db9a4-5e9c-4892-912c-a250a0bb8631",
             "runtime": "python3.6"
           }
-        ]
+        ],
+        "manifest": {
+          "eTag": "46472747143a3e1e7764aa2d47771b3b"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "dc76c4f3ad741a10b3c5624f4f928ac4"
+          }
+        }
       }
     }
   }
