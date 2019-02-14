@@ -66,8 +66,9 @@ class LaunchRequestHandler(AbstractRequestHandler):
             device_addr_client = service_client_fact.get_device_address_service()
             addr = device_addr_client.get_full_address(device_id)
 
-            addr.address_line1 = STREET
-            addr.city = CITY
+            #: uncomment for local development
+            # addr.address_line1 = STREET
+            # addr.city = CITY
 
             if addr.address_line1 is None or (addr.city and addr.postal_code is None):
                 response_builder.speak(NO_ADDRESS)
