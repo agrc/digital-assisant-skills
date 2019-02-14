@@ -5,7 +5,6 @@ vote_skill.py
 A module that tells you about legislative stuff
 '''
 
-
 import logging
 import os
 import sys
@@ -82,10 +81,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
             raise exception
 
         session_attributes = handler_input.attributes_manager.session_attributes
-        session_attributes['address'] = {
-            'street': addr.address_line1,
-            'zone': addr.city or addr.postal_code
-        }
+        session_attributes['address'] = {'street': addr.address_line1, 'zone': addr.city or addr.postal_code}
 
 
         handler_input.response_builder \
