@@ -1,0 +1,28 @@
+{
+  "name": "skill-cli",
+  "version": "1.0.0",
+  "description": "a cli tool to help with processes of this alexa skill",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agrc/alexa-vote-skill.git"
+  },
+  "keywords": [
+    "cli",
+    "alexa"
+  ],
+  "author": "steve gourley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/agrc/alexa-vote-skill/issues"
+  },
+  "homepage": "https://github.com/agrc/alexa-vote-skill#readme",
+  "devDependencies": {
+    "alexa-utterances": "^0.2.1",
+    "eslint-config-agrc": "^1.2.0",
+    "inquirer": "^6.2.2"
+  }
+}
