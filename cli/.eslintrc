@@ -1,0 +1,12 @@
+{
+    "extends": "agrc",
+    "rules": {
+        "prefer-const": [
+            "error",
+            {
+                "destructuring": "any",
+                "ignoreReadBeforeAssign": false
+            }
+        ]
+    }
+}
