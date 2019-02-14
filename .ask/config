@@ -5,25 +5,14 @@
       "was_cloned": false,
       "merge": {},
       "resources": {
-        "manifest": {
-          "eTag": "772db3d153d0c05c77537ce2c9a904c6"
-        },
-        "interactionModel": {
-          "en-US": {
-            "eTag": "dc76c4f3ad741a10b3c5624f4f928ac4"
-          }
-        },
         "lambda": [
           {
             "alexaUsage": [
               "custom/default"
             ],
-            "arn": "arn:aws:lambda:us-west-2:215627867010:function:ask-voting-assistant-dev-steve",
+            "functionName": "ask-voting-assistant-dev-steve2",
             "awsRegion": "us-west-2",
-            "codeUri": "lambda/py/lambda_upload",
-            "functionName": "ask-voting-assistant-dev-steve",
-            "handler": "vote_skill.skill_handler",
-            "revisionId": "44969041-d9de-4234-89cb-51a9c6be8daa",
+            "handler": "vote_skill.HANDLER",
             "runtime": "python3.6"
           }
         ]

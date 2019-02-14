@@ -3,8 +3,8 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "sslCertificateType": "Wildcard",
-          "uri": "https://4afc711f.ngrok.io/"
+          "uri": "ask-voting-assistant-dev-steve2",
+          "sourceDir": "lambda/py"
         },
         "interfaces": []
       }
