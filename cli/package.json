@@ -22,6 +22,8 @@
   "homepage": "https://github.com/agrc/alexa-vote-skill#readme",
   "devDependencies": {
     "alexa-utterances": "^0.2.1",
+    "chalk": "^2.4.2",
+    "eslint": "^5.13.0",
     "eslint-config-agrc": "^1.2.0",
     "inquirer": "^6.2.2"
   }
