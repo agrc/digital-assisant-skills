@@ -363,7 +363,7 @@ def get_or_cache_location(session_attributes):
 
         return None, None, AGRC_API_ERROR
 
-    result = response.result
+    result = response_data.result
     x_coord = result['location']['x']
     y_coord = result['location']['y']
 
