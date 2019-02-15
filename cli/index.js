@@ -7,6 +7,7 @@ const chalk = require('chalk');
 const askConfig = path.join(__dirname, '..', '.ask', 'config');
 const askConfigTemplate = path.join(__dirname, '..', '.ask', 'config.template');
 const skillConfig = path.join(__dirname, '..', 'skill.json');
+const skillConfigTemplate = path.join(__dirname, '..', 'skill.template.json');
 
 const bootstrap = 'I just cloned and I want to set things up!';
 const ngrok = 'I want to use ngrok and test locally.';
@@ -134,7 +135,7 @@ const main = async () => {
   }
 
   if (answers.route === 'skill.json') {
-    const data = fs.readFileSync(skillConfig);
+    const data = fs.readFileSync(skillConfigTemplate);
     let skill = JSON.parse(data.toString());
 
     const endpoint = skill.manifest.apis.custom.endpoint;
