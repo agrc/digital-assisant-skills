@@ -1,17 +1,23 @@
 'use strict';
 
-import { chalk } from 'chalk';
-import { path } from 'path';
-import { getFirstAnswers, getTagAnswers, getBootstrapAnswers, entries } from './questions';
-import tagger from './tagger';
-import templator from './templator';
+import { getFirstAnswers, getTagAnswers, getBootstrapAnswers, entries } from './questions.mjs';
+import chalk from 'chalk';
+import path from 'path';
+import tagger from './tagger.mjs';
+import templator from './templator.mjs';
+import url from 'url';
+
+const currentFilePath = import.meta.url;
+const basePath = path.dirname(url.fileURLToPath(currentFilePath));
 
 const filePaths = {
-  askConfig: path.join(__dirname, '..', '.ask', 'config'),
-  askConfigTemplate: path.join(__dirname, '..', '.ask', 'config.template'),
-  skillConfig: path.join(__dirname, '..', 'skill.json'),
-  skillConfigTemplate: path.join(__dirname, '..', 'skill.template.json')
+  askConfig: path.resolve(basePath, '.ask', 'config'),
+  askConfigTemplate: path.resolve(basePath, '.ask', 'config.template'),
+  skillConfig: path.resolve(basePath, '..', 'skill.json'),
+  skillConfigTemplate: path.resolve(basePath, '..', 'skill.template.json')
 };
+
+console.log(filePaths);
 
 const main = async () => {
   let answers = await getFirstAnswers();
@@ -33,7 +39,7 @@ const main = async () => {
   }
 
   if (answers.route === 'skill.json') {
-    templator(answers, filePaths, firstRun);
+   await templator(answers, filePaths, firstRun);
   }
 
   console.log(chalk.green.bold('all set.'));

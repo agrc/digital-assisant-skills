@@ -1,9 +1,9 @@
 'use strict';
 
 import { execSync } from 'child_process';
-import { opn } from 'opn';
-import { chalk } from 'chalk';
-import { loadJsonFromFile } from './util';
+import { loadJsonFromFile } from './util.mjs';
+import opn from 'opn';
+import chalk from 'chalk';
 
 export default async (answers, paths) => {
   const data = loadJsonFromFile(paths.askConfig);
