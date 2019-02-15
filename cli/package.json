@@ -1,5 +1,5 @@
 {
-  "name": "skill-cli",
+  "name": "votecli",
   "version": "1.0.0",
   "description": "a cli tool to help with processes of this alexa skill",
   "main": "index.js",
@@ -25,6 +25,7 @@
     "chalk": "^2.4.2",
     "eslint": "^5.13.0",
     "eslint-config-agrc": "^1.2.0",
-    "inquirer": "^6.2.2"
+    "inquirer": "^6.2.2",
+    "opn": "^5.4.0"
   }
 }
