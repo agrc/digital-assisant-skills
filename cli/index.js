@@ -143,6 +143,10 @@ const main = async () => {
       uri: answers.uri
     };
 
+    if (firstRun) {
+      skill.manifest.publishingInformation.locales['en-US'].name = answers.uri;
+    }
+
     if (answers.type === 'ngrok') {
       modified.sslCertificateType = 'Wildcard';
     } else if (answers.type === 'lambda') {
@@ -195,7 +199,6 @@ ${JSON.stringify(modified, null, '  ')}
     }
   }
 
-  console.log(JSON.stringify(answers, null, '  '));
   console.log(chalk.green.bold('all set.'));
 };
 
