@@ -11,15 +11,13 @@ const currentFilePath = import.meta.url;
 const basePath = path.dirname(url.fileURLToPath(currentFilePath));
 
 const filePaths = {
-  askConfig: path.resolve(basePath, '.ask', 'config'),
-  askConfigTemplate: path.resolve(basePath, '.ask', 'config.template'),
+  askConfig: path.resolve(basePath, '..', '.ask', 'config'),
+  askConfigTemplate: path.resolve(basePath, '..', '.ask', 'config.template'),
   skillConfig: path.resolve(basePath, '..', 'skill.json'),
   skillConfigTemplate: path.resolve(basePath, '..', 'skill.template.json')
 };
 
-console.log(filePaths);
-
-const main = async () => {
+(async () => {
   let answers = await getFirstAnswers();
   let firstRun = false;
 
@@ -43,6 +41,4 @@ const main = async () => {
   }
 
   console.log(chalk.green.bold('all set.'));
-};
-
-main();
+})();

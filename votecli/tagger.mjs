@@ -29,6 +29,7 @@ export default async (answers, paths) => {
       wait: false
     });
   } else if (answers.contact) {
+    options.CONTACT = answers.contact;
     const values = Object.keys(options)
       .reduce((previous, key) => `${previous}${key}="${options[key]}",`, '')
       .slice(0, -1);
