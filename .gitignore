@@ -2,6 +2,6 @@
 /.venv
 lambda/py/lambda_upload/
 .ask/config
-cli/node_modules/
+votecli/node_modules/
 skill.json
 skill.jsonn
