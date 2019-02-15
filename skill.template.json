@@ -2,10 +2,7 @@
   "manifest": {
     "apis": {
       "custom": {
-        "endpoint": {
-          "uri": "ask-voting-assistant-dev-steve2",
-          "sourceDir": "lambda/py"
-        },
+        "endpoint": {},
         "interfaces": []
       }
     },
