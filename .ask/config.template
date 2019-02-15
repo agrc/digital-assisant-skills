@@ -1,7 +1,7 @@
 {
   "deploy_settings": {
     "default": {
-      "skill_id": "amzn1.ask.skill.{skill-id}",
+      "skill_id": "",
       "was_cloned": false,
       "merge": {},
       "resources": {
@@ -10,7 +10,7 @@
             "alexaUsage": [
               "custom/default"
             ],
-            "functionName": "ask-voting-assistant-dev-{name}",
+            "functionName": "",
             "awsRegion": "us-west-2",
             "handler": "vote_skill.HANDLER",
             "runtime": "python3.6"
