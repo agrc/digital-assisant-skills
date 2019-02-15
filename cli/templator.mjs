@@ -1,9 +1,9 @@
 'use strict';
 
-import { chalk } from 'chalk';
-import { fs } from 'fs';
-import { loadJsonFromFile, saveJsonToFile } from './util';
-import { okPrompt } from './questions';
+import { loadJsonFromFile, saveJsonToFile } from './util.mjs';
+import { okPrompt } from './questions.mjs';
+import chalk from 'chalk';
+import fs from 'fs';
 
 export default async (answers, paths, firstRun) => {
   const data = fs.readFileSync(paths.skillConfigTemplate);

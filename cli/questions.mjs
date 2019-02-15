@@ -1,7 +1,7 @@
 'use strict';
 
-import { inquirer } from 'inquirer';
-import { getNameFromConfig } from './util';
+import inquirer from 'inquirer';
+import { getNameFromConfig } from './util.mjs';
 
 export const entries = {
   bootstrap: 'I just cloned and I want to set things up!',
@@ -16,15 +16,15 @@ export const questions = [{
   message: 'What do you want to do?',
   name: 'entry',
   choices: [{
-    name: ngrokText
+    name: entries.ngrok
   }, {
-    name: lambdaText
+    name: entries.lambda
   }, {
-    name: utterancesText
+    name: entries.utterances
   }, {
-    name: tagsText
+    name: entries.tags
   }, {
-    name: bootstrapText
+    name: entries.bootstrap
   }]
 }];
 
@@ -103,7 +103,7 @@ export const getTagAnswers = async () => {
 };
 
 export const okPrompt = async (text) => {
-  return inquirer.prompt([{
+  return await inquirer.prompt([{
     type: 'confirm',
     message: text,
     name: 'confirm'

@@ -1,6 +1,6 @@
 'use strict';
 
-import { fs } from 'fs';
+import fs from 'fs';
 
 export const loadJsonFromFile = (filePath) => {
   const data = fs.readFileSync(filePath);
