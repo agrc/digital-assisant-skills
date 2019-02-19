@@ -15,21 +15,22 @@ Install the [ask cli](https://www.npmjs.com/package/ask-cli). The Amazon Skills 
 `npm install -g ask-cli`.
 
 1. Initialize the cli with `ask init` and follow the instructions to authorize the cli.
+   - The credentials are in google team drive. _⚠️ Our accounts do not have access to create the required roles._
 1. Edit your `~/.aws/credentials` to pin your region to `us-west-2`. eg: `region=us-west-2`
 
-_The rest of the readme assumes that you are using the `default` profile, otherwise you will need to append `-p|--profile` to your `ask` commands._
+_⚠️ The rest of the readme assumes that you are using the `default` profile, otherwise you will need to append `-p|--profile` to your `ask` commands._
 
-Install the [alexa-utterances](https://github.com/alexa-js/alexa-utterances) package. This package helps manage the skill intent utterances. If you need to update or create new utterances update ...
+Install the `votecli` from this project. The vote CLI will help you bootstrap your project, switch between local and lambda development, and generate the utterances.
 
-`npm install alexa-utterances --production`
+`npm install -g ./votecli`
 
-```js
-// TODO document how to generate and update the skill.json from an utterance file
-```
+⚠️ If you are running this project for the first time, run the vote cli and select the bootstrap the project command.
+
+`votecli`
 
 ### python 3
 
-Execute `alexa-vote-skill/hooks/post_new_hook.sh alexa-vote-skill true` to create the python virtual environment. _run from one level outside the alexa-vote-skill directory_
+Execute `alexa-vote-skill/hooks/post_new_hook.sh alexa-vote-skill true` to create the python virtual environment. _⚠️ Execute the command from one level outside the alexa-vote-skill directory._
 
 To activate the virtual environment outside of VS Code run `source ./.venv/skill_env/bin/activate`. Use `deactivate` to get out of the virtual environment.
 
