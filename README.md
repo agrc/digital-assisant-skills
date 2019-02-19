@@ -56,18 +56,13 @@ You can install [ngrok](https://dashboard.ngrok.com/get-started) if you need a v
 
 ### alexa
 
+Use the `votecli` to swap between ngrok and lambda deployments.
+
 Use the `ask` cli to deploy your skill. `ask deploy`
 
 _You may need to use the `-f|--force` option._
 
-Update the `apis.custom.endpoint.uri` in `skill.json` to the generated ngrok https url.
-
-If you want to use a lambda function, replace the `apis.custom.endpoint` with
-
-```json
-"uri": "ask-voting-assistant-dev-{your-name}",
-"sourceDir": "lambda/py"
-```
+After deploying to lambda, be sure to use the vote cli to add the tags.
 
 ### testing
 
