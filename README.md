@@ -72,9 +72,17 @@ The `ask` cli has a `simulate` and `dialog` method for testing this skill. Ask d
 
 `ask dialag -l en-us`
 
-There are pregenerated converstaion paths in the `/recordings` folder. These speed up the development process.
+There are pregenerated converstaion paths in the `/recordings` folder. These speed up the dialog process.
 
 `ask dialog -r recordings/launch.json`
+
+As far as I can tell you cannot store a location when using the simulator. Therefore, you will need to hardcode an address if you are not using an actual device.
+
+```py
+#: uncomment for local development
+# addr.address_line1 = STREET
+# addr.city = CITY
+```
 
 #### alexa developer console
 
@@ -87,6 +95,8 @@ Click on the `Test` menu item and enable skill testing in `Development`.
 Speak or type `alexa open utah voting assistant` into the Alexa Simulator.
 
 ### documetation
+
+To access the skill using a physical device, you add a second person to your household in the amazon companion app or if you don't have a personal account sign in with the companion app and skip the rest of this. If you are already using this slot you would have to make room in order to add your work account. I suggest renaming your developer account to something like `work` since when switching accounts (`switch accounts`) the device will read `switching to works account` instead of having two identically named accounts.
 
 #### Links
 
