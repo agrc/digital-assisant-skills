@@ -20,12 +20,12 @@ This project uses nodejs and npm to make certain tasks easier. Please install th
 
 1. ask-cli `npm install -g ask-cli`
    - The Amazon Skills Kit CLI will help you deploy and test your skill.
-1. ./votecli `npm install -g ./votecli`
-   - This projects votecli will help you bootstrap your project, switch between local and lambda development, tag lambda functions to DTS standards, and generate utterances.
+1. votecli `npm install -g ./votecli`
+   - The votecli will help you bootstrap your project, switch between local and lambda development, tag lambda functions to DTS standards, and generate utterances.
 
 ### python 3
 
-This skill runs on pythons. Please configure the environment and install the required packages.
+This skill runs on 🐍. Please configure the environment and install the required packages.
 
 #### virtual environments
 
@@ -61,7 +61,7 @@ On the first clone of this project the `.ask/config` and the `skill.json` need t
 
 ### consent token
 
-In order to ask for a user address, whether or not they have one, you need a consent token. In order to make the alexa skill generate a consent token, you need to login to the alexa companion mobile app or you can try the [website](https://alexa.amazon.com/spa/index.html). I will assume the w
+Just to ask for a users address, whether or not they have one, you need a consent token. In order to make the alexa skill generate a consent token, you need to login to the alexa companion mobile app or you can try the [website](https://alexa.amazon.com/spa/index.html).
 
 #### mobile app
 
@@ -99,7 +99,7 @@ There are two ways to run the back end for this skill. A flask server running lo
 
 Start the flask server that is acting as a lambda function `python lambda/py/vote_skill.py`. You are now ready to handle requests coming from alexa.
 
-For the alexa skill to reach the flask server and our skill code, we must create a secure tunnel using `ngrok`. If you are vpn'd into the state network you will need to mount a network share to authenticate. It's weird... I don't understand it. But it works sometimes.
+For the alexa skill to reach the flask server and our skill code, we must create a secure tunnel using `ngrok`. _If you are vpn'd into the state network you will need to mount a network share to authenticate. It's weird... I don't understand it. But it works sometimes._
 
 Start ngrok: `./dev/ngrok http 5000` to access port 5000 of the local flask server with an https url.
 
@@ -124,6 +124,8 @@ After deploying to lambda, be sure to use the vote cli to add the DTS required t
 ## Testing Ritual
 
 As far as I can tell you cannot store an address when using the simulator. Therefore if you are running locally or on a device without an address stored, you will need to hardcode a Utah address to test.
+
+The recordings save the skill id in the data. Use the votecli to update the recordings for your skill.
 
 ```py
 #: uncomment for local development
