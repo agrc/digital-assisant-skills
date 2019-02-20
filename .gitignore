@@ -5,3 +5,4 @@ lambda/py/lambda_upload/
 votecli/node_modules/
 skill.json
 skill.jsonn
+recordings/*.json
