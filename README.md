@@ -12,6 +12,8 @@ Install the recommended extensions in `.vscode/extensions.json` if you like to u
 
 Install the Amazon Alexa app or maybe you can get away with logging into the [website](https://alexa.amazon.com/spa/index.html).
 
+_it seems that if you don't have any actual devices associated with your account you will need to use the mobile app as the website get's stuck on configuring a device._
+
 ### npm
 
 This project uses nodejs and npm to make certain tasks easier. Please install the required packages.
