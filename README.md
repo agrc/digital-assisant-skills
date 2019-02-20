@@ -1,88 +1,145 @@
 # AGRC Innovation Grant Vote Skill
 
-## Getting Started
+## Installation Parade
 
 ### VS Code
 
 We use vs code. If you want to use vs code then great.
 
-Install the recommended extensions from `.vscode/extensions.json`. You can use the command pallet (`cmd`+`shift`+`p`) to search for `Extensions: Show Recommended Extensions`. This will show you `Workspace Recommendations`. Install those.
+Install the recommended extensions in `.vscode/extensions.json` if you like to use the command pallet. You can use the command pallet (`cmd`+`shift`+`p`) to search for `Extensions: Show Recommended Extensions`.
+
+### ios/android/etc
+
+Install the Amazon Alexa app or maybe you can get away with logging into the [website](https://alexa.amazon.com/spa/index.html).
 
 ### npm
 
-Install the [ask cli](https://www.npmjs.com/package/ask-cli). The Amazon Skills Kit CLI will help you deploy and test your skill.
+This project uses nodejs and npm to make certain tasks easier. Please install the required packages.
 
-`npm install -g ask-cli`.
+#### required npm packages
 
-1. Initialize the cli with `ask init` and follow the instructions to authorize the cli.
-   - The credentials are in google team drive. _⚠️ Our accounts do not have access to create the required roles._
-1. Edit your `~/.aws/credentials` to pin your region to `us-west-2`. eg: `region=us-west-2`
-
-_⚠️ The rest of the readme assumes that you are using the `default` profile, otherwise you will need to append `-p|--profile` to your `ask` commands._
-
-Install the `votecli` from this project. The vote CLI will help you bootstrap your project, switch between local and lambda development, and generate the utterances.
-
-`npm install -g ./votecli`
-
-⚠️ If you are running this project for the first time, run the vote cli and select the bootstrap the project command.
-
-`votecli`
+1. ask-cli `npm install -g ask-cli`
+   - The Amazon Skills Kit CLI will help you deploy and test your skill.
+1. ./votecli `npm install -g ./votecli`
+   - This projects votecli will help you bootstrap your project, switch between local and lambda development, tag lambda functions to DTS standards, and generate utterances.
 
 ### python 3
+
+This skill runs on pythons. Please configure the environment and install the required packages.
+
+#### virtual environments
 
 Execute `alexa-vote-skill/hooks/post_new_hook.sh alexa-vote-skill true` to create the python virtual environment. _⚠️ Execute the command from one level outside the alexa-vote-skill directory._
 
 To activate the virtual environment outside of VS Code run `source ./.venv/skill_env/bin/activate`. Use `deactivate` to get out of the virtual environment.
 
+#### required python packages
+
+Install the python packages from `requirements.dev.text` into the `skill_env` virtual environment.
+
 `pip install -r requirements.dev.txt`
 
-Use the command pallet to select `Python: Select Interpreter`. Select the python with the `./.venv/skill_env` path. This will generate the following in your `settings.json`.
+#### extra packages
 
-```json
-{
-  "python.pythonPath": ".venv/skill_env/bin/python"
-}
-```
+The [aws-cli](https://github.com/aws/aws-cli) is a helpful tool for working with aws items, in our instance lambda functions.
+
+I used brew `brew install awscli` but their docs say `pip install awscli`. _You may need to use the `--ignore-installed six` if you get an error._
+
+## Configuration March
+
+### ask-cli
+
+1. Initialize the cli with `ask init` and follow the instructions to authorize the cli.
+   - The credentials are in google team drive, search for `amazon information`. _⚠️ Our accounts do not have access to create the required roles._
+1. Edit your `~/.aws/credentials` to pin your region to `us-west-2`. eg: `region=us-west-2`
+
+_⚠️ The rest of the readme assumes that you are using the `default` profile, otherwise you will need to append `-p|--profile` to your `ask` commands._
+
+### vote-cli
+
+On the first clone of this project the `.ask/config` and the `skill.json` need to be created. Use the `votecli` to generate those by selecting the `I just cloned and I want to set things up!` option. Follow the instructions to generate those files.
+
+### consent token
+
+In order to ask for a user address, whether or not they have one, you need a consent token. In order to make the alexa skill generate a consent token, you need to login to the alexa companion mobile app or you can try the [website](https://alexa.amazon.com/spa/index.html). I will assume the w
+
+#### mobile app
+
+In the mobile app, login as your `@utah.gov` user
+
+1. select skills & games
+1. select your skills
+1. select dev
+1. select the utah voting skill
+1. select settings
+1. select manage permissions
+1. check device address
+1. save permissions
+
+#### website app
+
+1. select skills
+1. select your skills
+1. select dev skills
+1. select the utah voting skill
+1. select settings
+1. select manage permissions
+1. check device address
+1. save permissions
+
+### real devices
+
+To access the skill using a physical device, you can add a second person to your household in the amazon companion app or if you don't have a personal account sign in with the companion app and skip the rest of this. If you are already using this slot you would have to sign out of your personal account and into the work account. You could then add yourself as a household adult. I suggest renaming your developer account to something like `work` since when switching accounts (`switch accounts`) the device will read `switching to works account` instead of having two identically named accounts.
+
+## Development Ceremony
+
+There are two ways to run the back end for this skill. A flask server running locally or via an aws lambda function.
+
+### local flask
 
 Start the flask server that is acting as a lambda function `python lambda/py/vote_skill.py`. You are now ready to handle requests coming from alexa.
 
-### localhost tunnel
-
-For the alexa skill to reach the flask server and our skill code, we must create an secure tunnel using ngrok.
+For the alexa skill to reach the flask server and our skill code, we must create a secure tunnel using `ngrok`. If you are vpn'd into the state network you will need to mount a network share to authenticate. It's weird... I don't understand it. But it works sometimes.
 
 Start ngrok: `./dev/ngrok http 5000` to access port 5000 of the local flask server with an https url.
 
-You can install [ngrok](https://dashboard.ngrok.com/get-started) if you need a version other than the bundled osx version. Follow the instructions to connect and use ngrok.
+_You can install [ngrok](https://dashboard.ngrok.com/get-started) if you need a version other than the bundled osx version. Follow the instructions to connect and use ngrok._
 
-### alexa
+Use the `votecli` to swap between ngrok and lambda deployments. Paste the **https** url into the vote cli and accept the changes.
 
-Use the `votecli` to swap between ngrok and lambda deployments.
+The setting for where alexa send requests is stored in the `skill.json`. An `ask deploy -t skill` is required after making a `skill.json` change to update the alexa skill.
 
-Use the `ask` cli to deploy your skill. `ask deploy`
+Updates to the `models\*.json` also require a deploy. Updates to the `vote_skill.py` when running locally, **do not** require a deployment.
 
-_You may need to use the `-f|--force` option._
+### lambda
 
-After deploying to lambda, be sure to use the vote cli to add the tags.
+Use the `votecli` to swap between ngrok and lambda deployments. Paste the lambda function name into the cli and accept the changes.
 
-### testing
+`ask deploy` to publish the lambda function as well as update the skill.
 
-#### ask-cli
+Every modification to `vote_skill.py` requires an `ask deploy` when running in lambda.
 
-The `ask` cli has a `simulate` and `dialog` method for testing this skill. Ask dialog will open a REPL that you can interact with your alexa skill.
+After deploying to lambda, be sure to use the vote cli to add the DTS required tags. This requires the aws cli or access to the aws console.
 
-`ask dialag -l en-us`
+## Testing Ritual
 
-There are pregenerated converstaion paths in the `/recordings` folder. These speed up the dialog process.
-
-`ask dialog -r recordings/launch.json`
-
-As far as I can tell you cannot store a location when using the simulator. Therefore, you will need to hardcode an address if you are not using an actual device.
+As far as I can tell you cannot store an address when using the simulator. Therefore if you are running locally or on a device without an address stored, you will need to hardcode a Utah address to test.
 
 ```py
 #: uncomment for local development
 # addr.address_line1 = STREET
 # addr.city = CITY
 ```
+
+### terminal
+
+The `ask` cli has a `dialog` method for testing skills. `ask dialog` will open a REPL that you can interact with your alexa skill.
+
+`ask dialag -l en-us`
+
+There are pregenerated converstaion paths in the `/recordings` folder. These speed up the dialog typing process.
+
+`ask dialog -r recordings/launch.json`
 
 #### alexa developer console
 
@@ -94,11 +151,7 @@ Click on the `Test` menu item and enable skill testing in `Development`.
 
 Speak or type `alexa open utah voting assistant` into the Alexa Simulator.
 
-### documetation
-
-To access the skill using a physical device, you add a second person to your household in the amazon companion app or if you don't have a personal account sign in with the companion app and skip the rest of this. If you are already using this slot you would have to make room in order to add your work account. I suggest renaming your developer account to something like `work` since when switching accounts (`switch accounts`) the device will read `switching to works account` instead of having two identically named accounts.
-
-#### Links
+## Links
 
 - [alexa developer console](https://developer.amazon.com/alexa/console)
 - [developer forums](https://forums.developer.amazon.com)
