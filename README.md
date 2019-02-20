@@ -126,6 +126,8 @@ The setting for where alexa send requests is stored in the `skill.json`. An `ask
 
 Updates to the `models\*.json` also require a deploy. Updates to the `vote_skill.py` when running locally, **do not** require a deployment.
 
+You can now proceed to the testing ritual or if you want the instructions for a lambda deployment, keep reading.
+
 ### lambda
 
 Use the `votecli` to swap between ngrok and lambda deployments. Paste the lambda function name into the cli and accept the changes.
