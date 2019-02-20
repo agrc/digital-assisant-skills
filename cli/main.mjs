@@ -23,22 +23,42 @@ const filePaths = {
   let answers = await getFirstAnswers();
   let firstRun = false;
 
-  if (answers.entry === entries.bootstrap) {
-    answers = await getBootstrapAnswers();
-    firstRun = true;
-  } else if (answers.entry === entries.ngrok) {
-    answers = await getBootstrapAnswers('ngrok');
-  } else if (answers.entry === entries.lambda) {
-    answers = await getBootstrapAnswers('lambda');
-  } else if (answers.entry === entries.utterances) {
-    console.log('generating utterances');
-  } else if (answers.entry === entries.tags) {
-    answers = await getTagAnswers();
+  switch (answers.entry) {
+    case entries.bootstrap:
+      answers = await getBootstrapAnswers();
+      firstRun = true;
 
-    await tagger(answers, filePaths);
-  } else if (answers.entry === entries.recordings) {
-    answers = await getRecordingAnswer();
-    recordings(filePaths.recordings, answers);
+      break;
+    case entries.ngrok:
+      answers = await getBootstrapAnswers('ngrok');
+
+      break;
+    case entries.lambda:
+      answers = await getBootstrapAnswers('lambda');
+
+      break;
+    case entries.utterances:
+      const samples = generateSamples(model);
+
+      updateModelSamples(filePath, samples);
+
+      break;
+    case entries.tags:
+      answers = await getTagAnswers();
+
+      await tagger(answers, filePaths);
+
+      break;
+
+    case entries.recordings:
+      answers = await getRecordingAnswer();
+
+      recordings(filePaths.recordings, answers);
+
+      break;
+
+    default:
+      break;
   }
 
   if (answers.route === 'skill.json') {
