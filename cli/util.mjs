@@ -35,3 +35,20 @@ export const getNameFromConfig = (askConfig) => {
     return lambdaMetadata[0].functionName;
   }
 };
+
+export const getSkillIdFromConfig = (askConfig) => {
+  let stats;
+  try {
+    stats = fs.statSync(askConfig);
+  } catch (error) {
+    return 'amzn1.ask.skill.';
+  }
+
+  if (!stats.isFile()) {
+    return 'amzn1.ask.skill.';
+  }
+
+  const config = loadJsonFromFile(askConfig);
+
+  return config.deploy_settings.default.skill_id;
+};
