@@ -1,6 +1,6 @@
 'use strict';
 
-import { loadJsonFromFile, saveJsonToFile } from './util.mjs';
+import { loadJsonFromFile, saveJsonToFile, getNameFromConfig } from './util.mjs';
 import { okPrompt } from './questions.mjs';
 import chalk from 'chalk';
 import fs from 'fs';
@@ -16,6 +16,8 @@ export default async (answers, paths, firstRun) => {
 
   if (firstRun) {
     skill.manifest.publishingInformation.locales['en-US'].name = answers.uri;
+  } else {
+    skill.manifest.publishingInformation.locales['en-US'].name = getNameFromConfig(paths.askConfig);
   }
 
   if (answers.type === 'ngrok') {
