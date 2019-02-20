@@ -1,95 +1,154 @@
 {
-    "interactionModel": {
-        "languageModel": {
-            "invocationName": "utah vote assistant",
-            "intents": [
-                {
-                    "name": "AMAZON.FallbackIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.CancelIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.HelpIntent",
-                    "samples": [
-                        "Help",
-                        "Help me",
-                        "I need help",
-                        "What can I do",
-                        "What can you do",
-                        "What do you know",
-                        "What can this do"
-                    ]
-                },
-                {
-                    "name": "AMAZON.StopIntent",
-                    "samples": [
-                        "Exit",
-                        "Stop"
-                    ]
-                },
-                {
-                    "name": "DistrictIntent",
-                    "slots": [],
-                    "samples": [
-                        "What is my district",
-                        "What district am I in",
-                        "What senate district am I in",
-                        "What is my senate district",
-                        "What house district am I in",
-                        "What is my house district"
-                    ]
-                },
-                {
-                    "name": "ElectedOfficialsIntent",
-                    "slots": [
-                        {
-                            "name": "house",
-                            "type": "HOUSE_TYPES"
-                        }
-                    ],
-                    "samples": [
-                        "who represents me",
-                        "who is my {house}",
-                        "who are my elected officials",
-                        "who are my state elected officials"
-                    ]
-                },
-                {
-                    "name": "ElectedOfficialDetailsIntent",
-                    "slots": [
-                        {
-                            "name": "house",
-                            "type": "HOUSE_TYPES"
-                        }
-                    ],
-                    "samples": [
-                        "{house}",
-                        "tell me more about my {house}",
-                        "I want to know more about my {house}",
-                        "my {house}"
-                    ]
-                }
-            ],
-            "types": [
-                {
-                    "name": "HOUSE_TYPES",
-                    "values": [
-                        {
-                            "name": {
-                                "value": "senator"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "representative"
-                            }
-                        }
-                    ]
-                }
-            ]
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "utah vote assistant",
+      "intents": [
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": [
+            "Help me",
+            "Teach me",
+            "Help us",
+            "Teach us",
+            "Help",
+            "Teach",
+            "I need help",
+            "we need help",
+            "What can I do here",
+            "What can you do here",
+            "What can this do here",
+            "What can I do",
+            "What can you do",
+            "What can this do",
+            "What do you know"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": [
+            "Exit",
+            "Stop",
+            "Quit",
+            "Enough",
+            "Shut up"
+          ]
+        },
+        {
+          "name": "DistrictIntent",
+          "slots": [],
+          "samples": [
+            "what is my senate political district",
+            "what are my senate political district",
+            "what is my house political district",
+            "what are my house political district",
+            "what is my senator political district",
+            "what are my senator political district",
+            "what is my senators political district",
+            "what are my senators political district",
+            "what is my representative political district",
+            "what are my representative political district",
+            "what is my representatives political district",
+            "what are my representatives political district",
+            "what is my senate district",
+            "what are my senate district",
+            "what is my house district",
+            "what are my house district",
+            "what is my senator district",
+            "what are my senator district",
+            "what is my senators district",
+            "what are my senators district",
+            "what is my representative district",
+            "what are my representative district",
+            "what is my representatives district",
+            "what are my representatives district",
+            "what senate district am I in",
+            "what house district am I in",
+            "what senator district am I in",
+            "what senators district am I in",
+            "what representative district am I in",
+            "what representatives district am I in",
+            "what senate district is mine",
+            "what house district is mine",
+            "what senator district is mine",
+            "what senators district is mine",
+            "what representative district is mine",
+            "what representatives district is mine"
+          ]
+        },
+        {
+          "name": "ElectedOfficialsIntent",
+          "slots": [
+            {
+              "name": "house",
+              "type": "HOUSE_TYPES"
+            }
+          ],
+          "samples": [
+            "who represents me",
+            "who represents us",
+            "who represents my family",
+            "who is my state {house}",
+            "who are my state {house}",
+            "who is our state {house}",
+            "who are our state {house}",
+            "who is my {house}",
+            "who are my {house}",
+            "who is our {house}",
+            "who are our {house}",
+            "who are my state elected officials",
+            "who are my elected officials",
+            "who are my state officials",
+            "who are my officials"
+          ]
+        },
+        {
+          "name": "ElectedOfficialDetailsIntent",
+          "slots": [
+            {
+              "name": "house",
+              "type": "HOUSE_TYPES"
+            }
+          ],
+          "samples": [
+            "{house}",
+            "tell me more about my {house}",
+            "tell us more about my {house}",
+            "tell me more about our {house}",
+            "tell us more about our {house}",
+            "I want to know more about my {house}",
+            "we want to know more about my {house}",
+            "I want to know more about our {house}",
+            "we want to know more about our {house}",
+            "my {house}",
+            "our {house}"
+          ]
         }
+      ],
+      "types": [
+        {
+          "name": "HOUSE_TYPES",
+          "values": [
+            {
+              "name": {
+                "value": "senator"
+              }
+            },
+            {
+              "name": {
+                "value": "representative"
+              }
+            }
+          ]
+        }
+      ]
     }
+  }
 }
