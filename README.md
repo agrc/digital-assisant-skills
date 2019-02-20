@@ -59,7 +59,7 @@ _⚠️ The rest of the readme assumes that you are using the `default` profile,
 
 ### vote-cli
 
-On the first clone of this project the `.ask/config` and the `skill.json` need to be created. Use the `votecli` to generate those by selecting the `I just cloned and I want to set things up!` option. Follow the instructions to generate those files.
+On the first clone of this project the `.ask/config` and the `skill.json` need to be created. Use the `votecli` to generate those by selecting the `I just cloned and I want to set things up!` option. Follow the instructions to generate those files. Choose `lambda` and a name like `ask-voting-assistant-dev-{name}` so it is unique. Execute `ask deploy` to publish the skill and the lambda function.
 
 ### consent token
 
@@ -89,9 +89,15 @@ In the mobile app, login as your `@utah.gov` user
 1. check device address
 1. save permissions
 
-### real devices
+### devices
+
+#### physical
 
 To access the skill using a physical device, you can add a second person to your household in the amazon companion app or if you don't have a personal account sign in with the companion app and skip the rest of this. If you are already using this slot you would have to sign out of your personal account and into the work account. You could then add yourself as a household adult. I suggest renaming your developer account to something like `work` since when switching accounts (`switch accounts`) the device will read `switching to works account` instead of having two identically named accounts.
+
+#### companion app
+
+The companion app, all devices, then settings, location, you are able to set a location for the alexa on this phone. When testing through the companion app, you should be able to use the stored address.
 
 ## Development Ceremony
 
