@@ -7,9 +7,9 @@ export const entries = {
   bootstrap: 'I just cloned and I want to set things up!',
   lambda: 'I want to deploy to lambda!',
   ngrok: 'I want to use ngrok and test locally.',
-  tags: 'I created a lambda function and it needs tags.',
-  utterances: 'I edited the utterances and I need to regenerate them.',
-  recordings: 'I have a skill id and need to update my recordings.'
+  tags: 'Tag lambda function.',
+  utterances: 'Update utterances.',
+  recordings: 'Create recordings with skill id.'
 };
 
 export const questions = [{
