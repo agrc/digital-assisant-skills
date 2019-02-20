@@ -1,7 +1,7 @@
 'use strict';
 
 import inquirer from 'inquirer';
-import { getNameFromConfig } from './util.mjs';
+import { getNameFromConfig, getSkillIdFromConfig } from './util.mjs';
 
 export const entries = {
   bootstrap: 'I just cloned and I want to set things up!',
@@ -109,7 +109,8 @@ export const getRecordingAnswer = async () => {
   return await inquirer.prompt([{
     type: 'input',
     name: 'skillId',
-    message: 'What is your skill id? eg: amzn1.ask.skill.'
+    message: 'What is your skill id? eg: amzn1.ask.skill.',
+    default: getSkillIdFromConfig()
   }]);
 };
 
