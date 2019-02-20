@@ -7,6 +7,8 @@ import tagger from './tagger.mjs';
 import templator from './templator.mjs';
 import recordings from './recordings.mjs';
 import url from 'url';
+import { generateSamples } from './utter.mjs';
+import model from './model.mjs';
 
 const currentFilePath = import.meta.url;
 const basePath = path.dirname(url.fileURLToPath(currentFilePath));
@@ -16,7 +18,8 @@ const filePaths = {
   askConfigTemplate: path.resolve(basePath, '..', '.ask', 'config.template'),
   skillConfig: path.resolve(basePath, '..', 'skill.json'),
   skillConfigTemplate: path.resolve(basePath, '..', 'skill.template.json'),
-  recordings: path.resolve(basePath, '..', 'recordings')
+  recordings: path.resolve(basePath, '..', 'recordings'),
+  model: path.resolve(basePath, '..', 'models', 'en-US.json')
 };
 
 (async () => {
@@ -40,7 +43,7 @@ const filePaths = {
     case entries.utterances:
       const samples = generateSamples(model);
 
-      updateModelSamples(filePath, samples);
+      updateModelSamples(filePaths, samples);
 
       break;
     case entries.tags:
