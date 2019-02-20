@@ -1,8 +1,8 @@
+.ask/config
 .DS_Store
 /.venv
+cli/node_modules/
 lambda/py/lambda_upload/
-.ask/config
-votecli/node_modules/
+recordings/*.json
 skill.json
 skill.jsonn
-recordings/*.json

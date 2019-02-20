@@ -20,7 +20,7 @@ This project uses nodejs and npm to make certain tasks easier. Please install th
 
 1. ask-cli `npm install -g ask-cli`
    - The Amazon Skills Kit CLI will help you deploy and test your skill.
-1. votecli `npm install -g ./votecli`
+1. votecli `npm install -g ./cli`
    - The votecli will help you bootstrap your project, switch between local and lambda development, tag lambda functions to DTS standards, and generate utterances.
 
 ### python 3
