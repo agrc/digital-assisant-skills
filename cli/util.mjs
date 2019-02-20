@@ -52,3 +52,21 @@ export const getSkillIdFromConfig = (askConfig) => {
 
   return config.deploy_settings.default.skill_id;
 };
+
+export const updateModelSamples = (filePath, model) => {
+  const currentModel = loadJsonFromFile(filePath.model);
+  const intents = currentModel.interactionModel.languageModel.intents;
+  const lookup = {};
+
+  intents.forEach((item, count) => {
+    lookup[item.name] = count;
+  });
+
+  console.log('updating model samples...');
+  model.forEach(intent => {
+    const index = lookup[intent.intent];
+    intents[index].samples = intent.samples;
+  });
+
+  saveJsonToFile(filePath.model, currentModel);
+};
