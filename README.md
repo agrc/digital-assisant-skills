@@ -140,7 +140,7 @@ After deploying to lambda, be sure to use the vote cli to add the DTS required t
 
 ## Testing Ritual
 
-As far as I can tell you cannot store an address when using the simulator. Therefore if you are running locally or on a device without an address stored, you will need to hardcode a Utah address to test.
+As far as I can tell you cannot store an address when using the terminal simulator or the website. Therefore if you are running locally or on a device without an address stored, you will need to hardcode a Utah address to test.
 
 The recordings save the skill id in the data. Use the votecli to update the recordings for your skill.
 
@@ -154,11 +154,15 @@ The recordings save the skill id in the data. Use the votecli to update the reco
 
 The `ask` cli has a `dialog` method for testing skills. `ask dialog` will open a REPL that you can interact with your alexa skill.
 
-`ask dialag -l en-us`
+`ask dialog -l en-us`
+
+You can type things like `open utah voting assistant` and then all of the other utterances that the skill understands. These items can be found in the `models\en-US.json`
 
 There are pregenerated converstaion paths in the `/recordings` folder. These speed up the dialog typing process.
 
 `ask dialog -r recordings/launch.json`
+
+In order to use/generate the recordings, use the `votecli` to generate the recordings with your skill id. Any modifications you make to the recordings, please do so in the `*.template` files.
 
 #### alexa developer console
 
