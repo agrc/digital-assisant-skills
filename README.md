@@ -97,7 +97,14 @@ To access the skill using a physical device, you can add a second person to your
 
 #### companion app
 
-The companion app, all devices, then settings, location, you are able to set a location for the alexa on this phone. When testing through the companion app, you should be able to use the stored address.
+The companion app
+
+1. select devices
+1. select all devices
+1. alexa on this phone
+1. location
+
+You are able to set a location for the alexa on this phone. When testing through the companion app, you should be able to use the stored address.
 
 ## Development Ceremony
 
