@@ -1,14 +1,15 @@
 'use strict';
 
+import { generateSamples } from './utter.mjs';
 import { getFirstAnswers, getTagAnswers, getBootstrapAnswers, getRecordingAnswer, entries } from './questions.mjs';
+import { updateModelSamples } from './util.mjs';
 import chalk from 'chalk';
+import model from './model.mjs';
 import path from 'path';
+import recordings from './recordings.mjs';
 import tagger from './tagger.mjs';
 import templator from './templator.mjs';
-import recordings from './recordings.mjs';
 import url from 'url';
-import { generateSamples } from './utter.mjs';
-import model from './model.mjs';
 
 const currentFilePath = import.meta.url;
 const basePath = path.dirname(url.fileURLToPath(currentFilePath));
