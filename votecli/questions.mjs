@@ -8,7 +8,8 @@ export const entries = {
   lambda: 'I want to deploy to lambda!',
   ngrok: 'I want to use ngrok and test locally.',
   tags: 'I created a lambda function and it needs tags.',
-  utterances: 'I edited the utterances and I need to regenerate them.'
+  utterances: 'I edited the utterances and I need to regenerate them.',
+  recordings: 'I have a skill id and need to update my recordings.'
 };
 
 export const questions = [{
@@ -21,6 +22,8 @@ export const questions = [{
     name: entries.lambda
   }, {
     name: entries.utterances
+  }, {
+    name: entries.recordings
   }, {
     name: entries.tags
   }, {
@@ -99,6 +102,14 @@ export const getTagAnswers = async () => {
     name: 'browser',
     message: 'Would you like to do it from the browser?',
     when: (has) => !has.aws
+  }]);
+};
+
+export const getRecordingAnswer = async () => {
+  return await inquirer.prompt([{
+    type: 'input',
+    name: 'skillId',
+    message: 'What is your skill id? eg: amzn1.ask.skill.'
   }]);
 };
 
