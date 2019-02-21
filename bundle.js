@@ -1,4 +1,7 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+window.utterances = require('alexa-utterances');
+
+},{"alexa-utterances":2}],2:[function(require,module,exports){
 var Combinatorics = require('js-combinatorics');
 var Numbered      = require('numbered');
 
@@ -166,7 +169,7 @@ function generateUtterances(str, slots, dictionary, exhaustiveUtterances) {
 
 module.exports = generateUtterances;
 
-},{"js-combinatorics":2,"numbered":3}],2:[function(require,module,exports){
+},{"js-combinatorics":3,"numbered":4}],3:[function(require,module,exports){
 /*
  * $Id: combinatorics.js,v 0.25 2013/03/11 15:42:14 dankogai Exp dankogai $
  *
@@ -713,7 +716,7 @@ module.exports = generateUtterances;
     return Combinatorics;
 }));
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function (root, factory) {
   /* istanbul ignore else */
   if (typeof module === 'object' && module.exports) {
