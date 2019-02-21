@@ -120,7 +120,7 @@
           if (!this.dictionaryValue || !this.dictionaryKey) {
             return;
           }
-          this.dictionary[this.dictionaryKey] = this.dictionaryValue.replace(/[\'\"\[\]]/g, '').split(',');
+          this.dictionary[this.dictionaryKey] = this.dictionaryValue.replace(/[\'\"\‘\’\“\”\[\]]/g, '').split(',');
           this.dictionaries.push({ id: this.dictionaryKey, text: this.dictionaryValue });
 
           this.dictionaryKey = '';
