@@ -1,5 +1,9 @@
 # AGRC Innovation Grant Vote Skill
 
+This project is the result of an innovation grant [awarded](/docs/award.md) by the DTS Technology Advisory Board to institutionalize and create a process for other divisions and agencies to follow that are interested in developing voice enabled digital assistants for the state of utah. This project is a example of how to develop a digital assistant skill as well as a knowledge base of what to expect and what is required during the entire process. This was the [proposal](/docs/proposal.md).
+
+The goal of this project is to make voting information more accessible to Utah citizens and, ultimately, increase engagement in the voting and political process. This effort aligns with the Innovation Fund’s mission to support projects that promote a “greater efficiency in a government process or a cost saving in the delivery of a government service, or both”
+
 ## Installation Parade
 
 ### VS Code
