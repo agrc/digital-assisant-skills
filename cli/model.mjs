@@ -6,7 +6,7 @@ export default [{
   },
   slots: {},
   templates: [
-    'what {is|are} my {branch}{ political|} district',
+    'what {is|are} my {state |}{branch}{ political|} district',
     'what {branch} district {am I in|is mine}'
   ]
 }, {
