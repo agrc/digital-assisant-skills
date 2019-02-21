@@ -2,7 +2,27 @@
 
 This project is the result of an innovation grant [awarded](/docs/award.md) by the DTS Technology Advisory Board to institutionalize and create a process for other divisions and agencies to follow that are interested in developing voice enabled digital assistants for the state of utah. This project is a example of how to develop a digital assistant skill as well as a knowledge base of what to expect and what is required during the entire process. This was the [proposal](/docs/proposal.md).
 
-The goal of this project is to make voting information more accessible to Utah citizens and, ultimately, increase engagement in the voting and political process. This effort aligns with the Innovation Fund’s mission to support projects that promote a “greater efficiency in a government process or a cost saving in the delivery of a government service, or both”
+The goal of this project is to make voting information more accessible to Utah citizens and, ultimately, increase engagement in the voting and political process. This effort aligns with the Innovation Fund’s mission to support projects that promote a “greater efficiency in a government process or a cost saving in the delivery of a government service, or both”.
+
+## Navigation
+
+- [Installation](#installation-parade)
+  - [vs code](#vs-code)
+  - [alexa app](#iosandroidetc)
+  - [npm modules](#npm)
+  - [python environment/packages](#python3)
+- [Configuration](#configuration-march)
+  - [ask cli](#ask-cli)
+  - [vote cli](#votecli)
+  - [skill permissions](#skill-permissions)
+  - [app](#devices)
+- [Development](#development-ceremony)
+  - [local](#local-flask)
+  - [cloud](#lambda)
+  - [interaction model](#skill-model)
+- [Testing](#testing-ritual)
+  - [terminal](#terminal)
+  - [alexa console](#alexa-developer-console)
 
 ## Installation Parade
 
@@ -61,13 +81,13 @@ I used brew `brew install awscli` but their docs say `pip install awscli`. _You 
 
 _⚠️ The rest of the readme assumes that you are using the `default` profile, otherwise you will need to append `-p|--profile` to your `ask` commands._
 
-### vote-cli
+### vote cli
 
 On the first clone of this project the `.ask/config` and the `skill.json` need to be created. Use the `votecli` to generate those by selecting the `I just cloned and I want to set things up!` option. Follow the instructions to generate those files. Choose `lambda` and a name like `ask-voting-assistant-dev-{name}` so it is unique. Execute `ask deploy` to publish the skill and the lambda function.
 
 _After deploying to lambda, be sure to use the vote cli to add the DTS required tags. This requires the aws cli or access to the aws console._
 
-### consent token
+### skill permissions
 
 Just to ask for a users address, whether or not they have one, you need a consent token. In order to make the alexa skill generate a consent token, you need to login to the alexa companion mobile app or you can try the [website](https://alexa.amazon.com/spa/index.html).
 
@@ -134,7 +154,7 @@ Updates to the `models\*.json` also require a deploy. Updates to the `vote_skill
 
 You can now proceed to the testing ritual or if you want the instructions for a lambda deployment, keep reading.
 
-### lambda
+### cloud lambda
 
 Use the `votecli` to swap between ngrok and lambda deployments. Paste the lambda function name into the cli and accept the changes.
 

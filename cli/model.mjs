@@ -1,7 +1,7 @@
 export default [{
   intent: 'DistrictIntent',
   dictionary: {
-    branch: ['senate', 'house', 'senator', 'senators', 'representative', 'representatives'],
+    branch: ['legislative', 'senate', 'house', 'senator', 'senators', 'representative', 'representatives'],
     branches: ['senate', 'house']
   },
   slots: {},
