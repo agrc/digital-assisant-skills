@@ -61,6 +61,8 @@ _⚠️ The rest of the readme assumes that you are using the `default` profile,
 
 On the first clone of this project the `.ask/config` and the `skill.json` need to be created. Use the `votecli` to generate those by selecting the `I just cloned and I want to set things up!` option. Follow the instructions to generate those files. Choose `lambda` and a name like `ask-voting-assistant-dev-{name}` so it is unique. Execute `ask deploy` to publish the skill and the lambda function.
 
+_After deploying to lambda, be sure to use the vote cli to add the DTS required tags. This requires the aws cli or access to the aws console._
+
 ### consent token
 
 Just to ask for a users address, whether or not they have one, you need a consent token. In order to make the alexa skill generate a consent token, you need to login to the alexa companion mobile app or you can try the [website](https://alexa.amazon.com/spa/index.html).
@@ -137,6 +139,12 @@ Use the `votecli` to swap between ngrok and lambda deployments. Paste the lambda
 Every modification to `vote_skill.py` requires an `ask deploy` when running in lambda.
 
 After deploying to lambda, be sure to use the vote cli to add the DTS required tags. This requires the aws cli or access to the aws console.
+
+### skill model
+
+Intents require samples or utterances to know what part of the skill code to invoke. To update the model, open the `model.mjs` file and edit the templates. We are using the [alexa-js](https://github.com/alexa-js/alexa-utterances#readme) project to expand our templates. The grammer they use to define their templating is terse. Read about it in their project documents.
+
+Any time the `model.mjs` file is modified, the `votecli` will need to be used to update the model for the skill. Finally, the `ask` cli will need to be used to deploy the updated model. `ask deploy -t model`.
 
 ## Testing Ritual
 
