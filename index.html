@@ -5,92 +5,97 @@
 <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
 <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="js/bundle.js"></script>
 <style>
-.container {
-  display: inline-grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-  grid-template-areas:
-    "left right"
-}
+  .container {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas:
+      "left right"
+  }
 </style>
+
 <body>
-  <script src="js/bundle.js"></script>
 
   <body class="pl4 bg-light-gray">
     <h1 class="navy">alexa-utterances</h1>
     <article id="app" class="container w-100 pa4 black-80">
-        <div class="pa2">
-          <label class="f4 dib mb-3">slots</label>
-          <div class="db">
-            <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
-              placeholder="add slots for the intent" v-model="slot"/>
-            <button type="button"
-              class="button-reset f6 bn tc bg-animate bg-dark-green hover-bg-green white pointer pv3 br2-ns ph3 br--right-ns"
-              v-on:click="addSlot">add</button>
-          </div>
+      <div class="pa2">
+        <label class="f4 dib mb-3">slots</label>
+        <div class="db">
+          <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
+            placeholder="add slots for the intent" v-model="slot" />
+          <button type="button"
+            class="button-reset f6 bn tc bg-animate bg-dark-green hover-bg-green white pointer pv3 br2-ns ph3 br--right-ns"
+            v-on:click="addSlot">add</button>
         </div>
-        <div class="pa2">
-          <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
-            <todo-item v-for="item in slots" v-bind:todo="item" v-bind:key="item.id">
-              <li class="ph3 pv2"></li>
-            </todo-item>
-          </ul>
+      </div>
+      <div class="pa2">
+        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
+          <todo-item v-for="item in slots" v-bind:todo="item" v-bind:key="item.id">
+            <li class="ph3 pv2"></li>
+          </todo-item>
+        </ul>
+      </div>
+      <div class="pa2">
+        <label class="f4 dib mb-3">dictionary</label>
+        <div class="db">
+          <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
+            placeholder="add dictionary name" v-model=dictionaryKey />
+          <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
+            placeholder="add dictionary items (comma separated)" v-model="dictionaryValue" />
+          <button type="button"
+            class="button-reset f6 bn tc bg-animate bg-dark-green hover-bg-green white pointer pv3 br2-ns ph3 br--right-ns"
+            v-on:click="addDict">add</button>
         </div>
-        <div class="pa2">
-          <label class="f4 dib mb-3">dictionary</label>
-          <div class="db">
-            <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
-              placeholder="add dictionary name" v-model=dictionaryKey />
-            <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
-              placeholder="add dictionary items (comma separated)" v-model="dictionaryValue"/>
-            <button type="button"
-              class="button-reset f6 bn tc bg-animate bg-dark-green hover-bg-green white pointer pv3 br2-ns ph3 br--right-ns"
-              v-on:click="addDict">add</button>
-          </div>
+      </div>
+      <div class="pa2">
+        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
+          <todo-item v-for="item in dictionaries" v-bind:todo="item" v-bind:key="item.id">
+            <li class="ph3 pv2"></li>
+          </todo-item>
+        </ul>
+      </div>
+      <div class="pa2">
+        <label class="f4 dib mb-3">templates</label>
+        <div class="db">
+          <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
+            placeholder="add template string" v-model="template" v-on:keyup.enter="addTemplate" />
+          <button type="button"
+            class="button-reset f6 bn tc bg-animate bg-dark-green hover-bg-green white pointer pv3 br2-ns ph3 br--right-ns"
+            v-on:click="addTemplate">add</button>
         </div>
-        <div class="pa2">
-          <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
-            <todo-item v-for="item in dictionaries" v-bind:todo="item" v-bind:key="item.id">
-              <li class="ph3 pv2"></li>
-            </todo-item>
-          </ul>
-        </div>
-        <div class="pa2">
-          <label class="f4 dib mb-3">templates</label>
-          <div class="db">
-            <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
-              placeholder="add template string" v-model="template"/>
-            <button type="button"
-              class="button-reset f6 bn tc bg-animate bg-dark-green hover-bg-green white pointer pv3 br2-ns ph3 br--right-ns"
-              v-on:click="addTemplate">add</button>
-          </div>
-        </div>
-        <div class="pa2">
-          <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
-            <todo-item v-for="item in templates" v-bind:todo="item" v-bind:key="item.id">
-              <li class="ph3 pv2"></li>
-            </todo-item>
-          </ul>
-        </div>
-        <div class="pa2">
-          <button v-on:click="generate" type="button"
-            class="button-reset ph3 pv2 f6 white fw1 small-caps tracked-mega bg-blue hover-bg-dark-blue pointer br2 bn">Generate</button>
-        </div>
-        <div class="pa2">
-          <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
-            <li class="ph3 pv3 bb b--light-silver" v-for="item in output">
-              {{ item }}
-            </li>
-          </ul>
-        </div>
+      </div>
+      <div class="pa2">
+        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
+          <todo-item v-for="item in templates" v-bind:todo="item" v-bind:key="item.id" @delete="onDeleteItem">
+            <li class="ph3 pv2"></li>
+          </todo-item>
+        </ul>
+      </div>
+      <div class="pa2">
+        <button v-on:click="generate" type="button"
+          class="button-reset ph3 pv2 f6 white fw1 small-caps tracked-mega bg-blue hover-bg-dark-blue pointer br2 bn">Generate</button>
+      </div>
+      <div class="pa2">
+        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
+          <li class="ph3 pv3 bb b--light-silver" v-for="item in output">
+            {{ item }}
+          </li>
+        </ul>
+      </div>
     </article>
   </body>
   <script>
     Vue.component('todo-item', {
-        props: ['todo'],
-        template: '<li class="ph3 pv2 bb b--light-silver">{{ todo.text }}</li>'
+      props: ['todo'],
+      template: `<li class="ph3 pv2 bb b--light-silver">{{ todo.text }}
+          <button v-on:click="$emit('delete', todo)" class="fr" type="button">x</button>
+        </li>`
     });
+
+    Vue.component('')
 
     const app = new Vue({
       el: '#app',
@@ -103,17 +108,22 @@
         dictionaryKey: '',
         dictionaries: [],
         dictionary: {},
-        output: []
+        output: [],
+        index: 0
       },
       methods: {
         generate() {
           this.output = window.utterances(this.templates[0].text, {}, this.dictionary);
         },
+        onDeleteItem(input) {
+          console.log(input);
+          this.templates = this.templates.filter(item => item.id !== input.id);
+        },
         addSlot() {
           if (!this.slot) {
             return;
           }
-          this.slots.push({ id: 0, text: this.slot});
+          this.slots.push({ id: 0, text: this.slot });
           this.slot = '';
         },
         addDict() {
@@ -130,7 +140,8 @@
           if (!this.template) {
             return;
           }
-          this.templates.push({ id: 0, text: this.template });
+          this.templates.push({ id: this.index, text: this.template });
+          this.index = this.index + 1;
           this.template = '';
         }
       }
