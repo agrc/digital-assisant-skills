@@ -166,7 +166,9 @@ After deploying to lambda, be sure to use the vote cli to add the DTS required t
 
 ### skill model
 
-Intents require samples or utterances to know what part of the skill code to invoke. To update the model, open the `model.mjs` file and edit the templates. We are using the [alexa-js](https://github.com/alexa-js/alexa-utterances#readme) project to expand our templates. The grammer they use to define their templating is terse. Read about it in their project documents.
+Intents require samples or utterances to know what part of the skill code to invoke. To update the model, open the `model.mjs` file and edit the templates. We are using the [alexa-js](https://github.com/alexa-js/alexa-utterances#readme) project to expand our templates. The grammar they use to define their templating is terse. Read about it in their project documents.
+
+To update the utterance samples, edit the `cli\models.mjs`, then use the `votecli` and select the update utterances to update the alexa model.
 
 Any time the `model.mjs` file is modified, the `votecli` will need to be used to update the model for the skill. Finally, the `ask` cli will need to be used to deploy the updated model. `ask deploy -t model`.
 
@@ -205,6 +207,10 @@ Click on this skill to view and edit the settings.
 Click on the `Test` menu item and enable skill testing in `Development`.
 
 Speak or type `alexa open utah voting assistant` into the Alexa Simulator.
+
+### utterance samples
+
+To test the utterance generation syntax and output, use the [uttereance tester](https://agrc.github.io/alexa-vote-skill/) website.
 
 ## Links
 
