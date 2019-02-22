@@ -32,7 +32,7 @@
     <div class="pv2">
       <div v-if="Object.keys(dictionary).length">
         <label class="f2 dark-green db mb-3">dictionaries</label>
-        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
+        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br2">
           <todo-item v-for="item in prettyDictionary" v-bind:todo="item" :key="item.id"
             @delete="onDeleteItem('dictionary', $event)">
           </todo-item>
