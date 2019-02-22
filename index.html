@@ -22,23 +22,6 @@
     <h1 class="navy">alexa-utterances</h1>
     <article id="app" class="container w-100 pa4 black-80">
       <div class="pa2">
-        <label class="f4 dib mb-3">slots</label>
-        <div class="db">
-          <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
-            placeholder="add slots for the intent" v-model="slot" />
-          <button type="button"
-            class="button-reset f6 bn tc bg-animate bg-dark-green hover-bg-green white pointer pv3 br2-ns ph3 br--right-ns"
-            v-on:click="addSlot">add</button>
-        </div>
-      </div>
-      <div class="pa2">
-        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
-          <todo-item v-for="item in slots" v-bind:todo="item" v-bind:key="item.id">
-            <li class="ph3 pv2"></li>
-          </todo-item>
-        </ul>
-      </div>
-      <div class="pa2">
         <label class="f4 dib mb-3">dictionary</label>
         <div class="db">
           <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
@@ -47,13 +30,13 @@
             placeholder="add dictionary items (comma separated)" v-model="dictionaryValue" />
           <button type="button"
             class="button-reset f6 bn tc bg-animate bg-dark-green hover-bg-green white pointer pv3 br2-ns ph3 br--right-ns"
-            v-on:click="addDict">add</button>
+            v-on:click="addTo('dictionary')">add</button>
         </div>
       </div>
       <div class="pa2">
-        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
-          <todo-item v-for="item in dictionaries" v-bind:todo="item" v-bind:key="item.id">
-            <li class="ph3 pv2"></li>
+        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3" v-if="Object.keys(dictionary).length">
+          <todo-item v-for="item in prettyDictionary" v-bind:todo="item" :key="item.id"
+            @delete="onDeleteItem('dictionary', $event)">
           </todo-item>
         </ul>
       </div>
@@ -61,16 +44,16 @@
         <label class="f4 dib mb-3">templates</label>
         <div class="db">
           <input type="text" class="input-reset f6 bn black-80 bg-white pa3 lh-solid w-75 br2-ns br--left-ns"
-            placeholder="add template string" v-model="template" v-on:keyup.enter="addTemplate" />
+            placeholder="add template string" v-model="template" v-on:keyup.enter="addTo('template')" />
           <button type="button"
             class="button-reset f6 bn tc bg-animate bg-dark-green hover-bg-green white pointer pv3 br2-ns ph3 br--right-ns"
-            v-on:click="addTemplate">add</button>
+            v-on:click="addTo('template')">add</button>
         </div>
       </div>
       <div class="pa2">
-        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
-          <todo-item v-for="item in templates" v-bind:todo="item" v-bind:key="item.id" @delete="onDeleteItem">
-            <li class="ph3 pv2"></li>
+        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3" v-if="templates.length">
+          <todo-item v-for="item in templates" v-bind:todo="item" :key="item.id"
+            @delete="onDeleteItem('template', $event)">
           </todo-item>
         </ul>
       </div>
@@ -79,7 +62,7 @@
           class="button-reset ph3 pv2 f6 white fw1 small-caps tracked-mega bg-blue hover-bg-dark-blue pointer br2 bn">Generate</button>
       </div>
       <div class="pa2">
-        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
+        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3" v-if="output.length">
           <li class="ph3 pv3 bb b--light-silver" v-for="item in output">
             {{ item }}
           </li>
@@ -90,9 +73,18 @@
   <script>
     Vue.component('todo-item', {
       props: ['todo'],
-      template: `<li class="ph3 pv2 bb b--light-silver">{{ todo.text }}
-          <button v-on:click="$emit('delete', todo)" class="fr" type="button">x</button>
-        </li>`
+      template: `<li class="ph3 pv2 bb b--light-silver">{{ displayText }}
+          <button v-on:click="$emit('delete', todo)" class="fr bg-white ba1 b--silver red code pt0" type="button">x</button>
+        </li>`,
+      computed: {
+        displayText(obj) {
+          if (obj.todo.text) {
+            return obj.todo.text;
+          }
+
+          console.log(obj);
+        }
+      }
     });
 
     Vue.component('')
@@ -111,38 +103,53 @@
         output: [],
         index: 0
       },
+      computed: {
+        // a computed getter
+        prettyDictionary() {
+          // `this` points to the vm instance
+
+          return Object.keys(this.dictionary).map(key => {
+            return {
+              id: key,
+              text: `${key}: ${this.dictionary[key]}`
+            }
+          });
+        }
+      },
       methods: {
         generate() {
-          this.output = window.utterances(this.templates[0].text, {}, this.dictionary);
-        },
-        onDeleteItem(input) {
-          console.log(input);
-          this.templates = this.templates.filter(item => item.id !== input.id);
-        },
-        addSlot() {
-          if (!this.slot) {
-            return;
-          }
-          this.slots.push({ id: 0, text: this.slot });
-          this.slot = '';
-        },
-        addDict() {
-          if (!this.dictionaryValue || !this.dictionaryKey) {
-            return;
-          }
-          this.dictionary[this.dictionaryKey] = this.dictionaryValue.replace(/[\'\"\‘\’\“\”\[\]]/g, '').split(',');
-          this.dictionaries.push({ id: this.dictionaryKey, text: this.dictionaryValue });
+          this.output = [];
 
-          this.dictionaryKey = '';
-          this.dictionaryValue = '';
+          this.templates.forEach(item => {
+            this.output = this.output.concat(window.utterances(item.text, {}, this.dictionary));
+          });
         },
-        addTemplate() {
-          if (!this.template) {
+        onDeleteItem(filter, input) {
+          if (filter === 'template') {
+            this.templates = this.templates.filter(item => item.id !== input.id);
             return;
+          } else if (filter === 'dictionary') {
+            Vue.delete(this.dictionary, input.id);
           }
-          this.templates.push({ id: this.index, text: this.template });
-          this.index = this.index + 1;
-          this.template = '';
+        },
+        addTo(place) {
+          if (place === 'dictionary') {
+            if (!this.dictionaryValue || !this.dictionaryKey) {
+              return;
+            }
+            this.dictionary[this.dictionaryKey] = this.dictionaryValue.replace(/[\'\"\‘\’\“\”\[\]]/g, '').split(',');
+            this.dictionaries.push({ id: this.dictionaryKey, text: this.dictionaryValue });
+
+            this.dictionaryKey = '';
+            this.dictionaryValue = '';
+          } else if (place === 'template') {
+            if (!this.template) {
+              return;
+            }
+            this.templates.push({ id: this.index, text: this.template });
+            this.index = this.index + 1;
+            this.template = '';
+          }
         }
       }
     });
