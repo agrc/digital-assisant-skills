@@ -50,7 +50,7 @@
     <div class="pv2">
       <div v-if="templates.length">
         <label class="f2 dark-green db mb-3">templates</label>
-        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3">
+        <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br2-ns">
           <todo-item v-for="item in templates" v-bind:todo="item" :key="item.id"
             @delete="onDeleteItem('template', $event)">
           </todo-item>
@@ -62,8 +62,8 @@
         class="button-reset ph3 pv2 f2 white fw1 small-caps tracked bg-animate bg-dark-pink hover-bg-purple pointer br2 bn">generate</button>
     </div>
     <div class="pv2">
-      <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br3" v-if="output.length">
-        <li class="ph3 pv3 bb b--light-silver" v-for="item in output">
+      <ul class="list bg-white pl0 ml0 mw6 ba b--light-silver br2-ns" v-if="output.length">
+        <li class="ph3 pv3" v-for="item in output">
           {{ item }}
         </li>
       </ul>
@@ -73,18 +73,9 @@
 <script>
   Vue.component('todo-item', {
     props: ['todo'],
-    template: `<li class="ph3 pv2 bb b--light-silver">{{ displayText }}
+    template: `<li class="ph3 pv2">{{ todo.text }}
           <button v-on:click="$emit('delete', todo)" class="fr bg-white bn navy pt0" type="button">x</button>
-        </li>`,
-    computed: {
-      displayText(obj) {
-        if (obj.todo.text) {
-          return obj.todo.text;
-        }
-
-        console.log(obj);
-      }
-    }
+        </li>`
   });
 
   Vue.component('')
