@@ -44,6 +44,8 @@ export default async (answers, paths) => {
       console.log(chalk.blue('tags updated'));
     } catch (error) {
       console.log(chalk.red('well that did not work.'));
+      console.error(error);
+
       throw error;
     }
   } else {
