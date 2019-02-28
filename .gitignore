@@ -6,3 +6,4 @@ lambda/py/lambda_upload/
 recordings/*.json
 skill.json
 skill.jsonn
+__pycache__/
