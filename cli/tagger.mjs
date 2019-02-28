@@ -9,7 +9,7 @@ export default async (answers, paths) => {
   const data = loadJsonFromFile(paths.askConfig);
   const { functionName, arn } = data.deploy_settings.default.resources.lambda[0];
   const options = {
-    ELCID: 'ITAGRC-2019',
+    ELCID: 'ITAGRC',
     DEPT: 'AGR',
     CONTACT: '{Your Name}',
     APP: 'Alexa Voting Assistant',
