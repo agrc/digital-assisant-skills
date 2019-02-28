@@ -11,7 +11,7 @@
               "custom/default"
             ],
             "functionName": "",
-            "handler": "vote_skill.HANDLER",
+            "handler": "skill.HANDLER",
             "runtime": "python3.6"
           }
         ]

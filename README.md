@@ -138,7 +138,7 @@ There are two ways to run the back end for this skill. A flask server running lo
 
 ### local flask
 
-Start the flask server that is acting as a lambda function `python lambda/py/vote_skill.py`. You are now ready to handle requests coming from alexa.
+Start the flask server that is acting as a lambda function `python lambda/py/skill.py`. You are now ready to handle requests coming from alexa.
 
 For the alexa skill to reach the flask server and our skill code, we must create a secure tunnel using `ngrok`. _If you are vpn'd into the state network you will need to mount a network share to authenticate. It's weird... I don't understand it. But it works sometimes._
 
@@ -150,7 +150,7 @@ Use the `votecli` to swap between ngrok and lambda deployments. Paste the **http
 
 The setting for where alexa send requests is stored in the `skill.json`. An `ask deploy -t skill` is required after making a `skill.json` change to update the alexa skill.
 
-Updates to the `models\*.json` also require a deploy. Updates to the `vote_skill.py` when running locally, **do not** require a deployment.
+Updates to the `models\*.json` also require a deploy. Updates to the `skill.py` when running locally, **do not** require a deployment.
 
 You can now proceed to the testing ritual or if you want the instructions for a lambda deployment, keep reading.
 
@@ -160,7 +160,7 @@ Use the `votecli` to swap between ngrok and lambda deployments. Paste the lambda
 
 `ask deploy` to publish the lambda function as well as update the skill.
 
-Every modification to `vote_skill.py` requires an `ask deploy` when running in lambda.
+Every modification to `skill.py` _or any of its packages_ requires an `ask deploy` when running in lambda.
 
 After deploying to lambda, be sure to use the vote cli to add the DTS required tags. This requires the aws cli or access to the aws console.
 
@@ -214,7 +214,7 @@ To test the utterance generation syntax and output, use the [uttereance tester](
 
 ## Links
 
-- [alexa developer console](https://developer.amazon.com/alexa/console)
+- [alexa developer console](https://developer.amazon.com/alexa/console/ask)
 - [developer forums](https://forums.developer.amazon.com)
 - [alexa skill kit sdk for python](https://alexa-skills-kit-python-sdk.readthedocs.io/en/latest/)
 - [Designing for voice guidelines](https://developer.amazon.com/docs/alexa-design/design-voice.html)
