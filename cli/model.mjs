@@ -1,4 +1,34 @@
 export default [{
+  intent: 'SessionIntent',
+  dictionary: {
+    session: ['session', '{-|year} session', 'the {-|year} session', 'Utah\'s session', 'the next session']
+  },
+  slots: {
+    year: 'AMAZON.FOUR_DIGIT_NUMBER'
+  },
+  templates: [
+    'When will the {-|year} session be{ held|}',
+    'What is the date of the {-|year} session',
+    'What are the dates of the {-|year} session',
+    'When is {session}',
+    'What {date is|dates are} {session}',
+    '{When is|What date is} {the legislature|the Utah Legislature|legislature} in session',
+    'Tell me when is {session}',
+    'Tell me the date of {session}',
+    'When does {session} {start|begin}',
+    'What is the first day of {session}',
+    'Tell me when does {session} {start|begin}',
+    'Tell me when {session} {starts|begins}',
+    'Tell me what is the first day of {session}',
+    'Tell me the first day of {session}',
+    'When does {session} {end|finish}',
+    'What is the {last|final} day of {session}',
+    'Tell me when does {session} {end|finish}',
+    'Tell me when {session} {ends|finishes}',
+    'Tell me what is the last day of {session}',
+    'Tell me the last day of {session}'
+  ]
+}, {
   intent: 'DistrictIntent',
   dictionary: {
     branch: ['legislative', 'senate', 'house', 'senator', 'senators', 'representative', 'representatives'],
@@ -18,6 +48,8 @@ export default [{
   templates: [
     'who represents {me|us|my family}',
     'who {is|are} {my|our} {state |}{-|house}',
+    'who is {my|our} {state |}{lesgislator}',
+    'who are {my|our} {state |}{lesgislators}',
     'who are my{ state|}{ elected|} officials'
   ]
 }, {
@@ -47,6 +79,6 @@ export default [{
   dictionary: {},
   slots: {},
   templates: [
-    '{Exit|Stop|Quit|Enough|Shut up}'
+    '{Exit|Stop|Quit|Enough|Shut up|Thank you|Thanks|ok}'
   ]
 }];
