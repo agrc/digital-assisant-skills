@@ -65,8 +65,8 @@ class Handler(AbstractRequestHandler):
         rep_party = deabbrivate(representative['party'])
         rep_name = representative['formatName']
 
-        response_builder.speak('Your representative is {}, {} and your Senator is {}, {}.'.format(senator_party, senator_name, rep_party, rep_name)) \
-            .ask('Would you like more information about your Senator or Representative? Say, senator or representative.')
+        response_builder.speak(text.LEGISLATOR.format(senator_party, senator_name, rep_party, rep_name)) \
+            .ask(text.LEGISLATOR_REPROMPT)
 
         return response_builder.response
 
@@ -81,7 +81,7 @@ class DetailsHandler(AbstractRequestHandler):
 
         official = utils.get_resolved_value(handler_input.request_envelope.request, 'house')
         if official is None:
-            response_builder.speak('I didn\'t get that.')
+            response_builder.speak(text.UNKOWN_SLOT)
 
             return response_builder.response
 
@@ -113,11 +113,7 @@ class DetailsHandler(AbstractRequestHandler):
         elif official == 'senator':
             data = senator
 
-        response_builder.speak(
-            '{} is a {} with an education in {}. They became a {} on {}'.format(
-                data['formatName'], data['profession'], data['education'], official, data['serviceStart']
-            )
-        )
+        response_builder.speak(text.DETAILS.format(data['formatName'], data['profession'], data['education'], official, data['serviceStart']))
 
         return response_builder.response
 
@@ -140,8 +136,35 @@ class CountHandler(AbstractRequestHandler):
             else:
                 sens += 1
 
-        response = 'There are {} legislators total -- with {} senators and {} representatives'.format(reps + sens, sens, reps)
+        response = text.COUNT.format(reps + sens, sens, reps)
         response_builder.speak(response) \
-            .ask(text.WHAT_DO_YOU_WANT)
+            .ask(text.COUNT_REPROMPT)
+
+        return response_builder.response
+
+
+class PartyStatsHandler(AbstractRequestHandler):
+
+    def can_handle(self, handler_input):
+        return is_intent_name('PartyStatsIntent')(handler_input)
+
+    def handle(self, handler_input):
+        response_builder = handler_input.response_builder
+
+        all_legislators = cache.get_all_legislators()
+        reps = 0
+        dems = 0
+
+        for legislator in all_legislators:
+            if legislator['party'].lower() == 'd':
+                dems += 1
+            elif legislator['party'].lower() == 'r':
+                reps += 1
+            else:
+                LOGGER.info(legislator['party'])
+
+        total = reps + dems
+
+        response_builder.speak(text.PARTY_STATS.format(dems, reps, dems/total, reps/total))
 
         return response_builder.response

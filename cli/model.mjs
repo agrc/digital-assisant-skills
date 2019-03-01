@@ -1,4 +1,18 @@
 export default [{
+  intent: 'PartyStatsIntent',
+  dictionary: {
+    party: ['republican', 'democrat', 'independent'],
+    parties: ['republicans', 'democrats', 'independents'],
+    branches: ['senators', 'representatives']
+  },
+  slots: {},
+  templates: [
+    'How many {party} {branches} are there{ in the legislature|}',
+    'How many {party} {branches} does{ the State of|} Utah have',
+    'How many {parties} are there{ in the legislature|}',
+    'How many {parties} does{ the State of|} Utah have'
+  ]
+}, {
   intent: 'LegislatorCountIntent',
   dictionary: {
     branches: ['legislators', 'senators', 'representatives'],

@@ -524,6 +524,48 @@
             "Number of senators in the Senate",
             "Number of Utah senators"
           ]
+        },
+        {
+          "name": "PartyStatsIntent",
+          "slots": [],
+          "samples": [
+            "How many republican senators are there in the legislature",
+            "How many democrat senators are there in the legislature",
+            "How many independent senators are there in the legislature",
+            "How many republican representatives are there in the legislature",
+            "How many democrat representatives are there in the legislature",
+            "How many independent representatives are there in the legislature",
+            "How many republican senators are there",
+            "How many democrat senators are there",
+            "How many independent senators are there",
+            "How many republican representatives are there",
+            "How many democrat representatives are there",
+            "How many independent representatives are there",
+            "How many republican senators does the State of Utah have",
+            "How many democrat senators does the State of Utah have",
+            "How many independent senators does the State of Utah have",
+            "How many republican representatives does the State of Utah have",
+            "How many democrat representatives does the State of Utah have",
+            "How many independent representatives does the State of Utah have",
+            "How many republican senators does Utah have",
+            "How many democrat senators does Utah have",
+            "How many independent senators does Utah have",
+            "How many republican representatives does Utah have",
+            "How many democrat representatives does Utah have",
+            "How many independent representatives does Utah have",
+            "How many republicans are there in the legislature",
+            "How many democrats are there in the legislature",
+            "How many independents are there in the legislature",
+            "How many republicans are there",
+            "How many democrats are there",
+            "How many independents are there",
+            "How many republicans does the State of Utah have",
+            "How many democrats does the State of Utah have",
+            "How many independents does the State of Utah have",
+            "How many republicans does Utah have",
+            "How many democrats does Utah have",
+            "How many independents does Utah have"
+          ]
         }
       ],
       "types": [
