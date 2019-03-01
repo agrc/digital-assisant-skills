@@ -90,18 +90,19 @@ def get_or_cache_districts(session_attributes):
 
 
 def get_or_cache_legislators(senate, house):
-    #: query le service
-    parent_directory = os.path.abspath(os.path.dirname(__file__))
-    legislators_json = os.path.join(parent_directory, '..', 'mock_data', 'le.utah.gov', 'legislators_endpoint.json')
-    LOGGER.debug('parent directory: %s', parent_directory)
-    LOGGER.debug('json file: %s', legislators_json)
-
-    all_legislators = None
-    with open(legislators_json) as json_file:
-        all_legislators = load(json_file)['legislators']
+    all_legislators = get_all_legislators()
 
     #: filter le results
     senator = [item for item in all_legislators if item['district'] == str(senate) and item['house'] == 'S'][0]
     representative = [item for item in all_legislators if item['district'] == str(house) and item['house'] == 'H'][0]
 
     return {'senator': senator, 'representative': representative}
+
+
+def get_all_legislators():
+    #: TODO create le api service
+    parent_directory = os.path.abspath(os.path.dirname(__file__))
+    legislators_json = os.path.join(parent_directory, '..', 'mock_data', 'le.utah.gov', 'legislators_endpoint.json')
+
+    with open(legislators_json) as json_file:
+        return load(json_file)['legislators']

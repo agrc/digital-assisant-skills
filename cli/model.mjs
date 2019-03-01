@@ -1,4 +1,32 @@
 export default [{
+  intent: 'LegislatorCountIntent',
+  dictionary: {
+    branches: ['legislators', 'senators', 'representatives'],
+    reps: ['people', 'legislators', 'representatives'],
+    sens: ['people', 'legislators', 'senators']
+  },
+  slots: {},
+  templates: [
+    'How many {branches} does{ the State of|} Utah have',
+    'Tell me how many {branches} does{ the State of|} Utah have',
+    'Tell me how many {branches}{ the State of|} Utah has',
+    'How many {branches} are there for{ the State of|} Utah',
+    'Tell me how many {branches} are there for{ the State of|} Utah',
+    'Tell me how many {branches} there are for{ the State of|} Utah',
+    'How many { people| legislators | representatives} { are in| are there in| make up } the { Utah|} House { of Representatives|}',
+    'Tell me how many {reps} {are in|are there in|make up} the {Utah |}House {of Representatives|}',
+    '{What is|What’s} the number of {reps} in the {Utah |}House {of Representatives|}',
+    'Tell me {what is|what’s} the number of {reps} in the {Utah |}House {of Representatives|}',
+    'Number of {reps} in the {Utah |}House {of Representatives|}',
+    'Number of Utah {branches}',
+    'How many {sens} {are in|are there in|make up} the {Utah |}Senate',
+    'Tell me how many {sens} {are in|are there in|make up} the {Utah |}Senate',
+    '{What is|What’s} the number of {sens} in the {Utah |}Senate',
+    'Tell me {what is|what’s} the number of {sens} in the {Utah |}Senate',
+    'Number of {sens} in the {Utah |}Senate',
+    'Number of Utah senators'
+  ]
+}, {
   intent: 'SessionIntent',
   dictionary: {
     session: ['session', '{-|year} session', 'the {-|year} session', 'Utah\'s session', 'the next session']

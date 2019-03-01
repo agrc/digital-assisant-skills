@@ -11,6 +11,7 @@ from ask_sdk_core.utils import is_intent_name
 
 from alexa import utils
 from caching import cache
+from config import text
 
 LOGGER = logging.getLogger('alexa-skill')
 
@@ -117,5 +118,30 @@ class DetailsHandler(AbstractRequestHandler):
                 data['formatName'], data['profession'], data['education'], official, data['serviceStart']
             )
         )
+
+        return response_builder.response
+
+
+class CountHandler(AbstractRequestHandler):
+
+    def can_handle(self, handler_input):
+        return is_intent_name('LegislatorCountIntent')(handler_input)
+
+    def handle(self, handler_input):
+        response_builder = handler_input.response_builder
+
+        all_legislators = cache.get_all_legislators()
+        sens = 0
+        reps = 0
+
+        for legislator in all_legislators:
+            if legislator['house'].lower() == 'h':
+                reps += 1
+            else:
+                sens += 1
+
+        response = 'There are {} legislators total -- with {} senators and {} representatives'.format(reps + sens, sens, reps)
+        response_builder.speak(response) \
+            .ask(text.WHAT_DO_YOU_WANT)
 
         return response_builder.response
