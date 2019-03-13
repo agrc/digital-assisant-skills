@@ -9,6 +9,8 @@ import logging
 from ask_sdk_core.dispatch_components import AbstractExceptionHandler, AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name, is_request_type
 
+from config import text
+
 LOGGER = logging.getLogger('alexa-skill')
 
 
@@ -43,7 +45,9 @@ class ExitIntentHandler(AbstractRequestHandler):
         )
 
     def handle(self, handler_input):
-        handler_input.response_builder.speak('abort').set_should_end_session(True)
+        handler_input.response_builder.speak(text.EXIT) \
+            .set_should_end_session(True)
+
         return handler_input.response_builder.response
 
 

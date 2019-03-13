@@ -15,6 +15,7 @@ NO_ADDRESS = (
 ERROR = 'Uh Oh. Looks like something went wrong.'
 AGRC_API_ERROR = 'Make sure your address is in Utah and is valid and try again.'
 UNKNOWN_SLOT = 'I didn\'t get that.'
+EXIT = 'I am happy to help.'
 
 #: legislature.py
 LEGISLATOR = 'Your representative is {}, {} and your Senator is {}, {}.'
