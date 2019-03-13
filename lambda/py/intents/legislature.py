@@ -81,7 +81,7 @@ class DetailsHandler(AbstractRequestHandler):
 
         official = utils.get_resolved_value(handler_input.request_envelope.request, 'house')
         if official is None:
-            response_builder.speak(text.UNKOWN_SLOT)
+            response_builder.speak(text.UNKNOWN_SLOT)
 
             return response_builder.response
 
