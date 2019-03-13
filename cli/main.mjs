@@ -29,16 +29,16 @@ const filePaths = {
 
   switch (answers.entry) {
     case entries.bootstrap:
-      answers = await getBootstrapAnswers();
+      answers = await getBootstrapAnswers(filePaths);
       firstRun = true;
 
       break;
     case entries.ngrok:
-      answers = await getBootstrapAnswers('ngrok');
+      answers = await getBootstrapAnswers(filePaths, 'ngrok');
 
       break;
     case entries.lambda:
-      answers = await getBootstrapAnswers('lambda');
+      answers = await getBootstrapAnswers(filePaths, 'lambda');
 
       break;
     case entries.utterances:
@@ -55,7 +55,7 @@ const filePaths = {
       break;
 
     case entries.recordings:
-      answers = await getRecordingAnswer();
+      answers = await getRecordingAnswer(filePaths);
 
       recordings(filePaths.recordings, answers);
 
