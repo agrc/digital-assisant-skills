@@ -1,6 +1,6 @@
 # Innovation Grant Accomplishments
 
-While the goal of this grant is to create a digital assistant skill, a lot more has gone into the project than just the coding of the skill.
+While the goal of this grant is to create a digital assistant skill, a lot more has gone into the project than just the coding of the skill. We [recorded what the skill](https://vimeo.com/323543288) is able to do for your viewing pleasure.
 
 ## Design Decisions
 
