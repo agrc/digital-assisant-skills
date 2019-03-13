@@ -14,7 +14,7 @@ from config import permissions, text
 
 
 class Handler(AbstractRequestHandler):
-
+    '''The main handler for the skill. Answers when the skill is invoked'''
     def can_handle(self, handler_input):
         return is_request_type('LaunchRequest')(handler_input)
 

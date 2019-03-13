@@ -8,7 +8,7 @@ import requests
 
 
 class Agrc():
-
+    '''A class to interact with the agrc web api'''
     def __init__(self, api_key):
         self._api_key = api_key
         self._url_template = 'https://api.mapserv.utah.gov/api/v1/{}/{}/{}'

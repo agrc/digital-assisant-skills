@@ -17,6 +17,7 @@ LOGGER = logging.getLogger('alexa-skill')
 
 
 def get_or_cache_location(session_attributes):
+    '''A method to geocode an address and store the result returning the same valuue on subsequent requests'''
     if 'location' in session_attributes:
         LOGGER.info('cache hit: location')
 
@@ -51,6 +52,7 @@ def get_or_cache_location(session_attributes):
 
 
 def get_or_cache_districts(session_attributes):
+    '''A method that searching for a political district and stores the result returning the same value on subsequent requests'''
     if 'districts' in session_attributes:
         LOGGER.info('cache hit: districts')
 
@@ -90,6 +92,7 @@ def get_or_cache_districts(session_attributes):
 
 
 def get_or_cache_legislators(senate, house):
+    '''A method that finds a legislator from a district and an H or R value'''
     all_legislators = get_all_legislators()
 
     #: filter le results
@@ -100,6 +103,7 @@ def get_or_cache_legislators(senate, house):
 
 
 def get_all_legislators():
+    '''Queries the le api and returns all the legislators'''
     #: TODO create le api service
     parent_directory = os.path.abspath(os.path.dirname(__file__))
     legislators_json = os.path.join(parent_directory, '..', 'mock_data', 'le.utah.gov', 'legislators_endpoint.json')

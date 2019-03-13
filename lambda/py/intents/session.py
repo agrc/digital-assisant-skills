@@ -26,8 +26,7 @@ SESSION_DURATION = 45
 
 
 def fourth_monday(year=datetime.date.today().year):
-    '''returns the date of the fourth monday of january for the given year
-    '''
+    '''returns the date of the fourth monday of january for the given year'''
     month = calendar.Calendar().monthdays2calendar(year, JANUARY)
     monday_count = 0
 
@@ -51,15 +50,14 @@ def fourth_monday(year=datetime.date.today().year):
 
 
 def session_ends(year, start_day):
-    '''returns the date that the session ends which is 45 days after it starts
-    '''
+    '''returns the date that the session ends which is 45 days after it starts'''
     start_date = datetime.date(year, JANUARY, start_day)
 
     return start_date + datetime.timedelta(days=SESSION_DURATION)
 
 
 class Handler(AbstractRequestHandler):
-
+    '''The default handler for session questions. Answers when a session will run for a given year'''
     def can_handle(self, handler_input):
         return is_intent_name('SessionIntent')(handler_input)
 

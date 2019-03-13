@@ -15,7 +15,7 @@ LOGGER = logging.getLogger('alexa-skill')
 
 
 class HelpIntentHandler(AbstractRequestHandler):
-
+    '''The intent invoked with a user asks for help'''
     def can_handle(self, handler_input):
         return is_intent_name('AMAZON.HelpIntent')(handler_input)
 
@@ -37,7 +37,7 @@ class SessionEndedRequestHandler(AbstractRequestHandler):
 
 
 class ExitIntentHandler(AbstractRequestHandler):
-
+    '''The handler called with a user exits the skill'''
     def can_handle(self, handler_input):
         return (
             is_intent_name('AMAZON.CancelIntent')(handler_input) or is_intent_name('AMAZON.StopIntent')(handler_input) or

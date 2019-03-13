@@ -17,7 +17,7 @@ LOGGER = logging.getLogger('alexa-skill')
 
 
 class Handler(AbstractRequestHandler):
-
+    '''The default legislature handler. Answers who your senator and representative are'''
     def can_handle(self, handler_input):
         return is_intent_name('ElectedOfficialsIntent')(handler_input)
 
@@ -72,7 +72,7 @@ class Handler(AbstractRequestHandler):
 
 
 class DetailsHandler(AbstractRequestHandler):
-
+    '''Answers questions about a specific legislator'''
     def can_handle(self, handler_input):
         return is_intent_name('ElectedOfficialDetailsIntent')(handler_input)
 
@@ -120,7 +120,7 @@ class DetailsHandler(AbstractRequestHandler):
 
 
 class CountHandler(AbstractRequestHandler):
-
+    '''Answers how many legislators utah has'''
     def can_handle(self, handler_input):
         return is_intent_name('LegislatorCountIntent')(handler_input)
 
@@ -145,7 +145,7 @@ class CountHandler(AbstractRequestHandler):
 
 
 class PartyStatsHandler(AbstractRequestHandler):
-
+    '''Answers how many legislators are democrate or republican'''
     def can_handle(self, handler_input):
         return is_intent_name('PartyStatsIntent')(handler_input)
 

@@ -11,7 +11,7 @@ from caching import cache
 
 
 class Handler(AbstractRequestHandler):
-
+    '''The default handler for district questions. Answers what political district an x,y location is in'''
     def can_handle(self, handler_input):
         return is_intent_name('DistrictIntent')(handler_input)
 
