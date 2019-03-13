@@ -113,7 +113,8 @@ class DetailsHandler(AbstractRequestHandler):
         elif official == 'senator':
             data = senator
 
-        response_builder.speak(text.DETAILS.format(data['formatName'], data['profession'], data['education'], official, data['serviceStart']))
+        response_builder.speak(text.DETAILS.format(data['formatName'], data['profession'], data['education'], official, data['serviceStart'])) \
+            .ask(text.WHAT_DO_YOU_WANT)
 
         return response_builder.response
 
@@ -165,6 +166,7 @@ class PartyStatsHandler(AbstractRequestHandler):
 
         total = reps + dems
 
-        response_builder.speak(text.PARTY_STATS.format(dems, reps, dems/total, reps/total))
+        response_builder.speak(text.PARTY_STATS.format(dems, reps, dems / total, reps / total)) \
+            .ask(text.WHAT_DO_YOU_WANT)
 
         return response_builder.response
