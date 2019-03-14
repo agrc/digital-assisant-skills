@@ -11,6 +11,7 @@ from json import load
 from types import SimpleNamespace
 
 from config import text
+from config import config
 from services import api
 
 LOGGER = logging.getLogger('alexa-skill')
@@ -25,7 +26,7 @@ def get_or_cache_location(session_attributes):
 
     LOGGER.info('cache miss: location')
 
-    client = api.Agrc('AGRC-Uptime')
+    client = api.Agrc(config.API_KEY)
 
     address = session_attributes['address']
 
@@ -60,7 +61,7 @@ def get_or_cache_districts(session_attributes):
 
     LOGGER.info('cache miss: districts')
 
-    client = api.Agrc('AGRC-Uptime')
+    client = api.Agrc(config.API_KEY)
 
     location = session_attributes['location']
 

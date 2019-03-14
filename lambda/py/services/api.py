@@ -12,13 +12,14 @@ class Agrc():
     def __init__(self, api_key):
         self._api_key = api_key
         self._url_template = 'https://api.mapserv.utah.gov/api/v1/{}/{}/{}'
+        self.referer = 'https://alexa.vote-skill.com'
 
     def search(self, table, fields, **options):
         options['apiKey'] = self._api_key
 
-        return requests.get(self._url_template.format('search', table, ','.join(fields)), params=options)
+        return requests.get(self._url_template.format('search', table, ','.join(fields)), headers={'referer': self.referer}, params=options)
 
     def geocode(self, street, zone, **options):
         options['apiKey'] = self._api_key
 
-        return requests.get(self._url_template.format('geocode', street, zone), params=options)
+        return requests.get(self._url_template.format('geocode', street, zone), headers={'referer': self.referer}, params=options)
