@@ -33,12 +33,12 @@ def get_or_cache_location(session_attributes):
     response = client.geocode(address['street'], address['zone'])
     response_data = SimpleNamespace(**response.json())
 
-    if response.status_code == 400 or response_data.status == 400:
+    if response.status_code == 400 or (hasattr(response_data, 'status') and response_data.status == 400):
         LOGGER.warning('geocode issue: %r', response_data)
 
         return None, None, response_data.message
 
-    if response.status_code != 200 or response_data.status != 200:
+    if response.status_code != 200 or (hasattr(response_data, 'status') and response_data.status != 200):
         LOGGER.warning('geocode issue: %r', response_data)
 
         return None, None, text.AGRC_API_ERROR
