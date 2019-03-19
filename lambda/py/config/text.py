@@ -17,6 +17,10 @@ AGRC_API_ERROR = 'Make sure your address is in Utah and is valid and try again.'
 UNKNOWN_SLOT = 'I didn\'t get that.'
 EXIT = 'I am happy to help.'
 
+HELP_START = 'Would you like to learn about legislative information or voting in your state? Say legislative or voting.'
+HELP_LEGISLATIVE = ('Ok. Would you like to know about the legislative calendar, legislator information, or committee information?',
+                    'Say calendar, legislator, or committee.')
+HELP_VOTING = 'Ok. Would you like to know about voting or past election outcomes? Say voting or past elections.'
 #: legislature.py
 LEGISLATOR = 'Your representative is {}, {} and your Senator is {}, {}.'
 LEGISLATOR_REPROMPT = 'Would you like more information about your Senator or Representative? Say, senator or representative.'

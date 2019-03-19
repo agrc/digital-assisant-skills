@@ -29,7 +29,11 @@
             "What can you do",
             "What can this do",
             "What do you know"
-          ]
+          ],
+          "slots": [{
+            "name": "help",
+            "type": "HELP_OPTIONS"
+          }]
         },
         {
           "name": "AMAZON.StopIntent",
@@ -583,6 +587,32 @@
               }
             }
           ]
+        }, {
+          "name": "HELP_OPTIONS",
+          "values": [{
+            "name": {
+              "value": "legislative"
+            }
+          }, {
+            "name": {
+              "value": "voting"
+            }
+          },
+          {
+            "name": {
+              "value": "calendar"
+            }
+          },
+          {
+            "name": {
+              "value": "legislator"
+            }
+          },
+          {
+            "name": {
+              "value": "committee"
+            }
+          }]
         }
       ]
     }

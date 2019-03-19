@@ -14,7 +14,7 @@ from ask_sdk_core.skill_builder import CustomSkillBuilder
 from ask_sdk_model import RequestEnvelope
 from flask import Flask, jsonify, request
 
-from intents import defaults, district, launch, legislature, session
+from intents import defaults, district, helping, launch, legislature, session
 from alexa import log
 
 SB = CustomSkillBuilder(api_client=DefaultApiClient())
@@ -46,7 +46,7 @@ SB.add_request_handler(legislature.DetailsHandler())
 SB.add_request_handler(legislature.CountHandler())
 SB.add_request_handler(legislature.PartyStatsHandler())
 SB.add_request_handler(session.Handler())
-SB.add_request_handler(defaults.HelpIntentHandler())
+SB.add_request_handler(helping.Handler())
 SB.add_request_handler(defaults.ExitIntentHandler())
 SB.add_request_handler(defaults.SessionEndedRequestHandler())
 

@@ -14,19 +14,6 @@ from config import text
 LOGGER = logging.getLogger('alexa-skill')
 
 
-class HelpIntentHandler(AbstractRequestHandler):
-    '''The intent invoked with a user asks for help'''
-    def can_handle(self, handler_input):
-        return is_intent_name('AMAZON.HelpIntent')(handler_input)
-
-    def handle(self, handler_input):
-        handler_input.attributes_manager.session_attributes = {}
-        # Resetting session
-
-        handler_input.response_builder.speak('what are you doing?').ask('what are you doing?')
-        return handler_input.response_builder.response
-
-
 class SessionEndedRequestHandler(AbstractRequestHandler):
 
     def can_handle(self, handler_input):
@@ -52,8 +39,7 @@ class ExitIntentHandler(AbstractRequestHandler):
 
 
 class CatchAllExceptionHandler(AbstractExceptionHandler):
-    '''Catch all exception handler, log exception and respond with custom message.
-    '''
+    '''Catch all exception handler, log exception and respond with custom message.'''
 
     def can_handle(self, handler_input, exception):
         return True

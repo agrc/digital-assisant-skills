@@ -2,7 +2,7 @@
 # * coding: utf8 *
 '''
 district.py
-A module that handles distrct intents
+A module that handles district intents
 '''
 from ask_sdk_core.dispatch_components import AbstractRequestHandler
 from ask_sdk_core.utils import is_intent_name
