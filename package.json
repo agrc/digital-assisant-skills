@@ -1,0 +1,26 @@
+{
+  "name": "google-vote-skill",
+  "version": "1.0.0",
+  "description": "packages for google home skill development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agrc/google-vote-skill.git"
+  },
+  "keywords": [
+    "voice",
+    "digital",
+    "assistant",
+    "google",
+    "home"
+  ],
+  "author": "steve gourley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/agrc/google-vote-skill/issues"
+  },
+  "homepage": "https://github.com/agrc/google-vote-skill#readme"
+}
