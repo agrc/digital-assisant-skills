@@ -1,5 +1,0 @@
-flask
-yapf
-pylint
-isort
--r ./requirements.txt
