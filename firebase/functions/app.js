@@ -3,11 +3,14 @@
 const { dialogflow, Permission } = require('actions-on-google');
 const text = require('./config/text');
 const { search } = require('./services/agrc');
+const leCache = require('./mock_data/legislators_endpoint.json');
 
 const app = dialogflow({ debug: true });
 
 const context = {
-  FROM: 'what-intent'
+  FROM: 'what-intent',
+  SENATE: 'what-senate-district',
+  HOUSE: 'what-house-district',
 };
 const lifespan = {
   ONCE: 1,
@@ -25,13 +28,29 @@ const requestLocation = (conv, text) => {
 };
 
 const getLocation = (conv) => {
-  if (conv.device.location) {
-    console.log('getLocation::using conversation');
-
-    return conv.device.location.coordinates;
+  if (!conv.device.location) {
+    return false;
   }
 
-  return false;
+  return conv.device.location.coordinates;
+};
+
+const getDistricts = (conv) => {
+  const data = conv.contexts.get(context.HOUSE);
+
+  if (!data) {
+    console.log('missing district context');
+
+    return false;
+  }
+
+  console.log('using district context');
+
+  const senate = conv.contexts.get(context.SENATE).parameters.district;
+  const house = data.parameters.district;
+
+  return { house, senate };
+};
 }
 
 const routeRequest = (conv) => {
@@ -63,11 +82,63 @@ const routeRequest = (conv) => {
         const senate = result.senate;
         const house = result.house;
 
-        console.log('returning result');
+        conv.contexts.set(context.HOUSE, lifespan.LONG, {
+          district: house
+        });
+
+        conv.contexts.set(context.SENATE, lifespan.LONG, {
+          district: senate
+        });
+
         conv.ask(text.DISTRICT.replace('{{house}}', house).replace('{{senate}}', senate));
 
         return conv.ask(text.DISTRICT_FOLLOW);
       });
+    }
+    case 'legislature': {
+      console.log('querying legislators');
+
+      // get districts
+      const districts = getDistricts(conv);
+      // if null get location, then get districts
+      if (!districts) {
+        // use agrc service
+      }
+
+      const { house, senate } = districts;
+
+      // query le service for legislators
+      const legislators = leCache.legislators;
+
+      const senator = legislators.filter((item) => item.house === 'S' && item.district === senate.toString())[0];
+      const representative = legislators.filter((item) => item.house === 'H' && item.district === house.toString())[0];
+
+      conv.contexts.set(context.SENATOR, lifespan.LONG, {
+        official: senator
+      });
+
+      conv.contexts.set(context.REPRESENTATIVE, lifespan.LONG, {
+        official: representative
+      });
+
+      const deabbrivate = (partyAbbr) => {
+        if (partyAbbr === 'D') {
+          return 'democrat'
+        }
+
+        if (partyAbbr === 'R') {
+          return 'republican'
+        }
+
+        return partyAbbr;
+      };
+
+      return conv.ask(text.LEGISLATOR
+        .replace('{{sen_party}}', deabbrivate(senator.party))
+        .replace('{{sen}}', senator.formatName)
+        .replace('{{rep}}', representative.formatName)
+        .replace('{{rep_party}}', deabbrivate(representative.party))
+      );
     }
     default: {
       return conv.ask(text.WELCOME);
@@ -97,6 +168,15 @@ app.intent('what is my district', (conv) => {
   return requestLocation(conv, 'To find your district');
 });
 
+app.intent('who represents me', (conv) => {
+  console.log('INTENT: who represents me');
+
+  conv.contexts.set(context.FROM, lifespan.ONCE, {
+    intent: 'legislature'
+  });
+
+  return requestLocation(conv, 'To find your elected officials');
+});
 app.intent('Default Welcome Intent', (conv) => conv.ask(text.WELCOME));
 
 module.exports = app;
