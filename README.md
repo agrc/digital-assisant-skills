@@ -37,6 +37,8 @@ To manage, view, and deploy to firebase cloud functions, install the [firebase c
 
 ### Firebase
 
+Firbase functions require an elevated account from the free spark tier to make http requests to external services. If your skill will make web requests outside of google services, the blaze plan is most likely the best option.
+
 `firebase serve --only functions`
 `npm run serve`
 
