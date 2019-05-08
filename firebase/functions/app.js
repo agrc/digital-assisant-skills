@@ -76,6 +76,8 @@ const routeRequest = (conv) => {
 };
 
 app.intent('location received', (conv, _, confirmationGranted) => {
+  console.log('INTENT: location received');
+
   const { location } = conv.device;
 
   if (!confirmationGranted || !location) {
@@ -86,6 +88,8 @@ app.intent('location received', (conv, _, confirmationGranted) => {
 });
 
 app.intent('what is my district', (conv) => {
+  console.log('INTENT: what is my district');
+
   conv.contexts.set(context.FROM, lifespan.ONCE, {
     intent: 'district'
   });
