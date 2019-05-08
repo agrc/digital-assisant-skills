@@ -52,7 +52,7 @@ const routeRequest = (conv) => {
 
       const options = {
         spatialReference: 4326,
-        geometry: `point:[${location.coordinates.longitude},${location.coordinates.latitude}]`
+        geometry: `point:[${location.longitude},${location.latitude}]`
       };
 
       return search('sgid10.political.officialslookup', ['repdist', 'sendist'], options).then(result => {
