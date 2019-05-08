@@ -20,6 +20,8 @@ exports.geocode = (options) => {
   };
 
   return rp(requestOptions).then((response) => {
+    console.log(response);
+
     if (response.status === 400) {
       console.warn('geocode issue: ', response);
 
