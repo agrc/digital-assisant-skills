@@ -5,4 +5,5 @@ module.exports = {
   AGRC_API_ERROR: 'Make sure your address is in Utah and is valid and try again.',
   LEGISLATOR: 'Your representative is {{rep_party}}, {{rep}} and your Senator is {{sen_party}}, {{sen}}.',
   DETAILS: '{{official}} is a {{profession}} with an education in {{education}}. They became a {{type}} on {{serviceStart}}',
+  COUNT: 'There are {{total}} legislators total -- with {{sens}} senators and {{reps}} representatives',
 };

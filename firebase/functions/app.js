@@ -235,6 +235,26 @@ app.intent('specific legislator details', (conv) => {
   return requestLocation(conv, 'To find details about your elected official');
 });
 
+app.intent('how many legislators', (conv) => {
+  const all = leCache.legislators;
+  let sens = 0;
+  let reps = 0;
+
+  all.forEach((legislator) => {
+    if (legislator.house.toLowerCase() === 'h') {
+      reps += 1;
+    } else {
+      sens += 1;
+    }
+  });
+
+  return conv.ask(text.COUNT
+    .replace('{{total}}', reps + sens)
+    .replace('{{sens}}', sens)
+    .replace('{{reps}}', reps)
+  );
+});
+
 app.intent('Default Welcome Intent', (conv) => conv.ask(text.WELCOME));
 
 module.exports = app;
