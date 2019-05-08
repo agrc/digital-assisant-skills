@@ -255,6 +255,28 @@ app.intent('how many legislators', (conv) => {
   );
 });
 
+app.intent('party statistics', (conv) => {
+  const all = leCache.legislators;
+  let dems = 0;
+  let reps = 0;
+
+  all.forEach((legislator) => {
+    if (legislator.party.toLowerCase() === 'r') {
+      reps += 1;
+    } else {
+      dems += 1;
+    }
+  });
+
+  const total = reps + dems;
+
+  return conv.ask(text.PARTY_STATS
+    .replace('{{dems}}', dems)
+    .replace('{{reps}}', reps)
+    .replace('{{dem_percent}}', ((dems / total) * 100).toFixed(1))
+    .replace('{{rep_percent}}', ((reps / total) * 100).toFixed(1))
+  );
+});
 app.intent('Default Welcome Intent', (conv) => conv.ask(text.WELCOME));
 
 module.exports = app;
