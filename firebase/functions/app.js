@@ -11,6 +11,8 @@ const context = {
   FROM: 'what-intent',
   SENATE: 'what-senate-district',
   HOUSE: 'what-house-district',
+  SENATOR: 'who-senator',
+  REPRESENTATIVE: 'who-representative'
 };
 const lifespan = {
   ONCE: 1,
@@ -51,6 +53,22 @@ const getDistricts = (conv) => {
 
   return { house, senate };
 };
+
+const getOfficials = (conv) => {
+  const data = conv.contexts.get(context.SENATOR);
+
+  if (!data) {
+    console.log('missing official context');
+
+    return false;
+  }
+
+  console.log('using official context');
+
+  const senator = conv.contexts.get(context.SENATOR).parameters.official;
+  const representative = data.parameters.official;
+
+  return { representative, senator, official: data.parameters.Branch };
 }
 
 const routeRequest = (conv) => {
@@ -140,6 +158,35 @@ const routeRequest = (conv) => {
         .replace('{{rep_party}}', deabbrivate(representative.party))
       );
     }
+    case 'legislator-details': {
+      // get officials
+      const officials = getOfficials(conv);
+      // if null get location, then get officials
+      if (!officials) {
+        // use agrc service
+      }
+
+      let data;
+      const { representative, senator, official } = officials;
+
+      if (official === 'house') {
+        data = representative;
+        data.branch = 'representative';
+      } else if (official === 'senate') {
+        data = senator;
+        data.branch = 'senator';
+      } else {
+        return conv.ask('Which branch are you insterested in?');
+      }
+
+      return conv.ask(text.DETAILS
+        .replace('{{official}}', data.formatName)
+        .replace('{{profession}}', data.profession)
+        .replace('{{education}}', data.education)
+        .replace('{{type}}', data.branch)
+        .replace('{{serviceStart}}', data.serviceStart)
+      );
+    }
     default: {
       return conv.ask(text.WELCOME);
     }
@@ -177,6 +224,17 @@ app.intent('who represents me', (conv) => {
 
   return requestLocation(conv, 'To find your elected officials');
 });
+
+app.intent('specific legislator details', (conv) => {
+  console.log('INTENT: specific legislator details');
+
+  conv.contexts.set(context.FROM, lifespan.ONCE, {
+    intent: 'legislator-details'
+  });
+
+  return requestLocation(conv, 'To find details about your elected official');
+});
+
 app.intent('Default Welcome Intent', (conv) => conv.ask(text.WELCOME));
 
 module.exports = app;
