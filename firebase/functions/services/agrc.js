@@ -15,7 +15,8 @@ exports.geocode = (options) => {
     url: url + qs.stringify(query),
     headers: {
       'referer': 'https://google.vote-skill.com'
-    }
+    },
+    json: true
   };
 
   return rp(requestOptions).then((response) => {
