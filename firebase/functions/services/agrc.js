@@ -51,57 +51,50 @@ exports.geocode = (options) => {
 
 exports.search = (table, fields, options) => {
   console.log('webapi.searching')
-  return new Promise((resolve, reject) => {
-    console.log('faking webapi response');
 
-    const response = { result: [{ attributes: { repdist: 28, sendist: 7 } }], status: 200 };
+  const url = `https://api.mapserv.utah.gov/api/v1/search/${table}/${fields}?`;
 
-    resolve({
+  const query = {
+    apiKey,
+    spatialReference: options.spatialReference || 26912
+  };
+
+  const requestOptions = {
+    url: url + qs.stringify(query) + `&geometry=${options.geometry}`,
+    headers: {
+      'referer': 'https://google.vote-skill.com'
+    },
+    json: true
+  };
+
+  return rp(requestOptions).then((response) => {
+    console.log(response);
+
+    if (response.status === 400) {
+      console.warn('search issue, status is 400: ', response);
+
+      return {
+        message: response.message
+      }
+    }
+
+    if (response.status !== 200) {
+      console.warn('search issue, status not 200: ', response);
+
+      return {
+        message: text.AGRC_API_ERROR
+      }
+    }
+
+    return {
       senate: response.result[0].attributes.sendist,
       house: response.result[0].attributes.repdist
-    });
+    };
+  }).catch((err) => {
+    console.error('global search error:', err);
+
+    return {
+      message: err
+    };
   });
-
-  // const url = `https://api.mapserv.utah.gov/api/v1/search/${table}/${fields}?`;
-
-  // const query = {
-  //   apiKey,
-  //   spatialReference: options.spatialReference || 26912
-  // };
-
-  // const requestOptions = {
-  //   url: url + qs.stringify(query) + `&geometry=${options.geometry}`,
-  //   headers: {
-  //     'referer': 'https://google.vote-skill.com'
-  //   }
-  // };
-
-  // return rp(requestOptions).then((response) => {
-  //   if (response.status === 400) {
-  //     console.warning('search issue: ', response);
-
-  //     return {
-  //       message: response.message
-  //     }
-  //   }
-
-  //   if (response.status !== 200) {
-  //     console.warning('search issue: ', response);
-
-  //     return {
-  //       message: text.AGRC_API_ERROR
-  //     }
-  //   }
-
-  //   return {
-  //     senate: response.result[0].attributes.sendist,
-  //     house: response.result[0].attributes.repdist
-  //   };
-  // }).catch((err) => {
-  //   console.error('search issue:', err);
-
-  //   return {
-  //     message: err
-  //   };
-  // });
 };
