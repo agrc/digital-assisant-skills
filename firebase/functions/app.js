@@ -7,8 +7,7 @@ const { search } = require('./services/agrc');
 const app = dialogflow({ debug: true });
 
 const context = {
-  FROM: 'what-intent',
-  LOCATION: 'where-am-i'
+  FROM: 'what-intent'
 };
 const lifespan = {
   ONCE: 1,
@@ -25,7 +24,17 @@ var requestLocation = (conv, text) => {
   conv.ask(new Permission(options));
 };
 
-var routeRequest = (conv) => {
+const getLocation = (conv) => {
+  if (conv.device.location) {
+    console.log('getLocation::using conversation');
+
+    return conv.device.location.coordinates;
+  }
+
+  return false;
+}
+
+const routeRequest = (conv) => {
   const where = conv.contexts.get(context.FROM).parameters.intent;
 
   console.log(`context.get: ${where}`);
@@ -33,6 +42,14 @@ var routeRequest = (conv) => {
   switch (where) {
     case 'district': {
       console.log('querying district');
+
+      const location = getLocation(conv);
+      console.log(location);
+
+      if (!location) {
+        return requestLocation(conv, 'To find your district');
+      }
+
       const options = {
         spatialReference: 4326,
         geometry: `point:[${location.coordinates.longitude},${location.coordinates.latitude}]`
@@ -64,10 +81,6 @@ app.intent('location received', (conv, _, confirmationGranted) => {
   if (!confirmationGranted || !location) {
     return conv.ask('Ok, well I can answer other questions without your location');
   }
-
-  conv.contexts.set(context.LOCATION, lifespan.LONG, {
-    location: location.coordinates
-  });
 
   return routeRequest(conv);
 });
