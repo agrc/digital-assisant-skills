@@ -21,7 +21,7 @@ exports.geocode = (options) => {
 
   return rp(requestOptions).then((response) => {
     if (response.status === 400) {
-      console.warning('geocode issue: ', response);
+      console.warn('geocode issue: ', response);
 
       return {
         message: response.message
@@ -29,7 +29,7 @@ exports.geocode = (options) => {
     }
 
     if (response.status !== 200) {
-      console.warning('geocode issue: ', response);
+      console.warn('geocode issue: ', response);
 
       return {
         message: text.AGRC_API_ERROR
