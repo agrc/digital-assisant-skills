@@ -15,7 +15,7 @@ const lifespan = {
   LONG: 100
 };
 
-var requestLocation = (conv, text) => {
+const requestLocation = (conv, text) => {
   const options = {
     context: text,
     // Ask for more than one permission. User can authorize all or none.
