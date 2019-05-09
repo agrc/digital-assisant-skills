@@ -1,8 +1,10 @@
 'use strict';
 
 const { BasicCard, Button, Image, Suggestions, Table } = require('actions-on-google');
-const location = require('./location');
 const { context, lifespan } = require('../config/config');
+const agrc = require('../services/agrc');
+const contextHelper = require('../context');
+const location = require('./location');
 const le = require('../services/le');
 const text = require('../config/text');
 
@@ -22,7 +24,7 @@ exports.findLegislators = (conv) => {
   console.log('legislature.findLegislators');
 
   // get districts
-  const districts = getDistricts(conv);
+  const districts = contextHelper.getDistricts(conv);
   // if null get location, then get districts
   if (!districts) {
     // use agrc service
@@ -97,7 +99,7 @@ exports.legislatorDetailIntent = {
 exports.getSpecificLegislator = (conv) => {
   console.log('legislature.getSpecificLegislator');
   // get officials
-  const officials = getOfficials(conv);
+  const officials = contextHelper.getOfficials(conv);
   // if null get location, then get officials
   if (!officials) {
     // use agrc service
@@ -214,38 +216,4 @@ exports.partyStatisticsIntent = {
         '\r\n\r\n**Republicans**: ' + reps.toString()
     }));
   }
-};
-
-const getDistricts = (conv) => {
-  const data = conv.contexts.get(context.HOUSE);
-
-  if (!data) {
-    console.log('missing district context');
-
-    return false;
-  }
-
-  console.log('using district context');
-
-  const senate = conv.contexts.get(context.SENATE).parameters.district;
-  const house = data.parameters.district;
-
-  return { house, senate };
-};
-
-const getOfficials = (conv) => {
-  const data = conv.contexts.get(context.REPRESENTATIVE);
-
-  if (!data) {
-    console.log('missing official context');
-
-    return false;
-  }
-
-  console.log('using official context');
-
-  const senator = conv.contexts.get(context.SENATOR).parameters.official;
-  const representative = data.parameters.official;
-
-  return { representative, senator, official: data.parameters.Branch };
 };

@@ -2,14 +2,15 @@
 
 const { Table, Suggestions } = require('actions-on-google');
 const { context, lifespan } = require('../config/config');
-const location = require('./location');
 const agrc = require('../services/agrc');
+const contextHelper = require('../context')
+const location = require('./location');
 const text = require('../config/text');
 
 exports.findDistricts = (conv) => {
   console.log('district.findDistricts');
 
-  const location = getLocation(conv);
+  const location = contextHelper.getLocation(conv);
   console.log(location);
 
   if (!location) {
@@ -72,12 +73,4 @@ exports.districtIntent = {
 
     return location.requestLocation(conv, 'To find your district');
   }
-};
-
-const getLocation = (conv) => {
-  if (!conv.device.location) {
-    return false;
-  }
-
-  return conv.device.location.coordinates;
 };
