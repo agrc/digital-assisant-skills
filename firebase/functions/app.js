@@ -18,16 +18,6 @@ const addIntents = (...args) => {
   }
 };
 
-app.intent('specific legislator details', (conv) => {
-  console.log('INTENT: specific legislator details');
-
-  conv.contexts.set(context.FROM, lifespan.ONCE, {
-    intent: 'legislator-details'
-  });
-
-  return requestLocation(conv, 'To find details about your elected official');
-});
-
 app.intent('Default Welcome Intent', (conv) => {
   conv.ask(text.WELCOME);
 
@@ -61,7 +51,8 @@ addIntents(
   howManyLegislatorsIntent,
   partyStatisticsIntent,
   sessionItent,
-  representMeIntent
+  representMeIntent,
+  legislatorDetailIntent,
   helpIntent
 );
 

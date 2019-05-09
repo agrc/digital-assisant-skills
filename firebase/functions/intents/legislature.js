@@ -1,25 +1,8 @@
-const { BasicCard, Suggestions, Table } = require('actions-on-google');
+const { BasicCard, Button, Image, Suggestions, Table } = require('actions-on-google');
 const location = require('./location');
 const { context, lifespan } = require('../config/config');
 const leCache = require('../mock_data/legislators_endpoint.json');
 const text = require('../config/text');
-
-const getDistricts = (conv) => {
-  const data = conv.contexts.get(context.HOUSE);
-
-  if (!data) {
-    console.log('missing district context');
-
-    return false;
-  }
-
-  console.log('using district context');
-
-  const senate = conv.contexts.get(context.SENATE).parameters.district;
-  const house = data.parameters.district;
-
-  return { house, senate };
-};
 
 exports.representMeIntent = {
   'who represents me': (conv) => {
@@ -97,6 +80,69 @@ exports.findLegislators = (conv) => {
   ]));
 };
 
+exports.legislatorDetailIntent = {
+  'specific legislator details': (conv) => {
+    console.log('INTENT: specific legislator details');
+
+    conv.contexts.set(context.FROM, lifespan.ONCE, {
+      intent: 'legislator-details'
+    });
+
+    return location.requestLocation(conv, 'To find details about your elected official');
+  }
+};
+
+exports.getSpecificLegislator = (conv) => {
+  console.log('legislature.getSpecificLegislator');
+  // get officials
+  const officials = getOfficials(conv);
+  // if null get location, then get officials
+  if (!officials) {
+    // use agrc service
+  }
+
+  let data;
+  const { representative, senator, official } = officials;
+
+  if (official === 'house') {
+    data = representative;
+    data.branch = 'representative';
+  } else if (official === 'senate') {
+    data = senator;
+    data.branch = 'senator';
+  } else {
+    return conv.ask('Which branch are you insterested in?');
+  }
+
+  conv.ask(text.DETAILS
+    .replace('{{official}}', data.formatName)
+    .replace('{{profession}}', data.profession)
+    .replace('{{education}}', data.education)
+    .replace('{{type}}', data.branch)
+    .replace('{{serviceStart}}', data.serviceStart)
+  );
+
+  return conv.ask(new BasicCard({
+    image: new Image({
+      url: data.image,
+      alt: data.formatName
+    }),
+    title: data.formatName,
+    subtitle: data.branch,
+    text: `**District**: ${data.district}\r\n\r\n` +
+      `**Counties**: ${data.counties}\r\n\r\n` +
+      `**Profession**: ${data.profession}\r\n\r\n` +
+      `**Education**: ${data.education}\r\n\r\n` +
+      `**email**: ${data.email}\r\n\r\n` +
+      `**cell**: ${data.cell}`,
+    buttons: [
+      new Button({
+        title: 'Legislation',
+        url: data.legislation
+      })
+    ]
+  }));
+};
 
 exports.howManyLegislatorsIntent = {
   'how many legislators': (conv) => {
@@ -166,4 +212,38 @@ exports.partyStatisticsIntent = {
         '\r\n\r\n**Republicans**: ' + reps.toString()
     }));
   }
-}
+};
+
+const getDistricts = (conv) => {
+  const data = conv.contexts.get(context.HOUSE);
+
+  if (!data) {
+    console.log('missing district context');
+
+    return false;
+  }
+
+  console.log('using district context');
+
+  const senate = conv.contexts.get(context.SENATE).parameters.district;
+  const house = data.parameters.district;
+
+  return { house, senate };
+};
+
+const getOfficials = (conv) => {
+  const data = conv.contexts.get(context.REPRESENTATIVE);
+
+  if (!data) {
+    console.log('missing official context');
+
+    return false;
+  }
+
+  console.log('using official context');
+
+  const senator = conv.contexts.get(context.SENATOR).parameters.official;
+  const representative = data.parameters.official;
+
+  return { representative, senator, official: data.parameters.Branch };
+};
