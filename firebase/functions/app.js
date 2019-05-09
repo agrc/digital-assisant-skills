@@ -1,12 +1,11 @@
 'use strict';
 
-const { dialogflow, BasicCard, Button, Image, Table, Suggestions } = require('actions-on-google');
+const { dialogflow, BasicCard, Button, Image, Suggestions } = require('actions-on-google');
 const { districtIntent } = require('./intents/district');
-const { representMeIntent, legislatorDetailIntent } = require('./intents/legislature');
+const { howManyLegislatorsIntent, partyStatisticsIntent, representMeIntent, legislatorDetailIntent } = require('./intents/legislature');
 const { requestLocationIntent, locationReceivedIntent } = require('./intents/location');
 const sessionItent = require('./intents/session');
 const text = require('./config/text');
-const leCache = require('./mock_data/legislators_endpoint.json');
 
 const app = dialogflow({ debug: true });
 
@@ -36,72 +35,6 @@ app.intent('specific legislator details', (conv) => {
   });
 
   return requestLocation(conv, 'To find details about your elected official');
-});
-
-app.intent('how many legislators', (conv) => {
-  const all = leCache.legislators;
-  let sens = 0;
-  let reps = 0;
-
-  all.forEach((legislator) => {
-    if (legislator.house.toLowerCase() === 'h') {
-      reps += 1;
-    } else {
-      sens += 1;
-    }
-  });
-
-  conv.ask(text.COUNT
-    .replace('{{total}}', reps + sens)
-    .replace('{{sens}}', sens)
-    .replace('{{reps}}', reps)
-  );
-
-  conv.ask(new Table({
-    title: `Legislators: ${reps + sens}`,
-    columns: [{
-      header: 'Senators',
-      align: 'CENTER'
-    }, {
-      header: 'Representatives',
-      align: 'CENTER'
-    }],
-    rows: [[sens.toString(), reps.toString()]]
-  }));
-
-  return conv.ask(new Suggestions([
-    'How many democrats',
-    'How many republicans'
-  ]));
-});
-
-app.intent('party statistics', (conv) => {
-  const all = leCache.legislators;
-  let dems = 0;
-  let reps = 0;
-
-  all.forEach((legislator) => {
-    if (legislator.party.toLowerCase() === 'r') {
-      reps += 1;
-    } else {
-      dems += 1;
-    }
-  });
-
-  const total = reps + dems;
-
-  conv.ask(text.PARTY_STATS
-    .replace('{{dems}}', dems)
-    .replace('{{reps}}', reps)
-    .replace('{{dem_percent}}', ((dems / total) * 100).toFixed(1))
-    .replace('{{rep_percent}}', ((reps / total) * 100).toFixed(1))
-  );
-
-  return conv.ask(new BasicCard({
-    title: 'Party Statistics',
-    text: '**Democrats**: ' + dems.toString() +
-      '\r\n\r\n**Republicans**: ' + reps.toString()
-  }));
 });
 
 app.intent('when is the session', (conv, params) => {
@@ -226,7 +159,9 @@ app.intent('Default Welcome Intent', (conv) => {
 
 addIntents(
   districtIntent,
-  locationReceivedIntent
+  locationReceivedIntent,
+  howManyLegislatorsIntent,
+  partyStatisticsIntent
 );
 
 module.exports = app;
