@@ -53,7 +53,7 @@ const getDistricts = (conv) => {
 };
 
 const getOfficials = (conv) => {
-  const data = conv.contexts.get(context.HOUSE);
+  const data = conv.contexts.get(context.REPRESENTATIVE);
 
   if (!data) {
     console.log('missing official context');
