@@ -1,6 +1,6 @@
 const { BasicCard, Button, Image, Table, Suggestions } = require('actions-on-google');
 const { context, lifespan } = require('../config/config');
-const findDistricts = require('./district').findDistricts;
+const district = require('./district');
 const text = require('../config/text');
 
 const getDistricts = (conv) => {
@@ -46,7 +46,7 @@ module.exports = (conv) => {
     case 'district': {
       console.log('routing to find districts');
 
-      return findDistricts(conv);
+      return district.findDistricts(conv);
     }
     case 'legislature': {
       console.log('querying legislators');

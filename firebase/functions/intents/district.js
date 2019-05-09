@@ -1,7 +1,7 @@
 const { Table, Suggestions } = require('actions-on-google');
 const { context, lifespan } = require('../config/config');
-const { requestLocation } = require('../intents/location')
-const { search } = require('../services/agrc');
+const location = require('./location');
+const agrc = require('../services/agrc');
 const text = require('../config/text');
 
 const getLocation = (conv) => {
@@ -19,7 +19,7 @@ exports.findDistricts = (conv) => {
   console.log(location);
 
   if (!location) {
-    return requestLocation(conv, 'To find your district');
+    return location.requestLocation(conv, 'To find your district');
   }
 
   const options = {
@@ -27,7 +27,7 @@ exports.findDistricts = (conv) => {
     geometry: `point:[${location.longitude},${location.latitude}]`
   };
 
-  return search('sgid10.political.officialslookup', ['repdist', 'sendist'], options)
+  return agrc.search('sgid10.political.officialslookup', ['repdist', 'sendist'], options)
     .then(result => {
       if (result.message) {
         return conv.ask(result.message);
@@ -76,6 +76,6 @@ exports.districtIntent = {
       intent: 'district'
     });
 
-    return requestLocation(conv, 'To find your district');
+    return location.requestLocation(conv, 'To find your district');
   }
 };
