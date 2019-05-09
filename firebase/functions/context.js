@@ -1,6 +1,6 @@
 'use strict';
 
-const { context } = require('../config/config');
+const { context } = require('./config/config');
 
 exports.getLocation = (conv) => {
   if (!conv.device.location) {
