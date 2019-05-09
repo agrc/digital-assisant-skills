@@ -3,7 +3,7 @@
 const { BasicCard, Button, Image, Suggestions, Table } = require('actions-on-google');
 const location = require('./location');
 const { context, lifespan } = require('../config/config');
-const leCache = require('../mock_data/legislators_endpoint.json');
+const le = require('../services/le');
 const text = require('../config/text');
 
 exports.representMeIntent = {
@@ -31,7 +31,7 @@ exports.findLegislators = (conv) => {
   const { house, senate } = districts;
 
   // query le service for legislators
-  const legislators = leCache.legislators;
+  const legislators = le.search().legislators;
 
   const senator = legislators.filter((item) => item.house === 'S' && item.district === senate.toString())[0];
   const representative = legislators.filter((item) => item.house === 'H' && item.district === house.toString())[0];
@@ -148,7 +148,7 @@ exports.getSpecificLegislator = (conv) => {
 
 exports.howManyLegislatorsIntent = {
   'how many legislators': (conv) => {
-    const all = leCache.legislators;
+    const all = le.search().legislators;
     let sens = 0;
     let reps = 0;
 
@@ -187,7 +187,7 @@ exports.howManyLegislatorsIntent = {
 
 exports.partyStatisticsIntent = {
   'party statistics': (conv) => {
-    const all = leCache.legislators;
+    const all = le.search().legislators;
     let dems = 0;
     let reps = 0;
 
