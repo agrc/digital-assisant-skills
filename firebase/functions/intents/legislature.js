@@ -23,65 +23,40 @@ exports.representMeIntent = {
 exports.findLegislators = (conv) => {
   console.log('legislature.findLegislators');
 
-  // get districts
-  const districts = contextHelper.getDistricts(conv);
-  // if null get location, then get districts
-  if (!districts) {
-    // use agrc service
-  }
+  return new Promise((resolve, reject) => {
+    // get districts
+    const districts = contextHelper.getDistricts(conv);
 
-  const { house, senate } = districts;
+    // if null get location, then get districts
+    if (!districts) {
+      // use agrc service
+      const location = contextHelper.getLocation(conv);
 
-  // query le service for legislators
-  const legislators = le.search().legislators;
+      if (!location) {
+        return location.requestLocation(conv, 'To find your legislator');
+      }
 
-  const senator = legislators.filter((item) => item.house === 'S' && item.district === senate.toString())[0];
-  const representative = legislators.filter((item) => item.house === 'H' && item.district === house.toString())[0];
+      const options = {
+        spatialReference: 4326,
+        geometry: `point:[${location.longitude},${location.latitude}]`
+      };
 
-  conv.contexts.set(context.SENATOR, lifespan.LONG, {
-    official: senator
-  });
+      return agrc.search('sgid10.political.officialslookup', ['repdist', 'sendist'], options)
+        .then(result => {
+          if (result.message) {
+            return { error: result.message };
+          }
 
-  conv.contexts.set(context.REPRESENTATIVE, lifespan.LONG, {
-    official: representative
-  });
-
-  const deabbrivate = (partyAbbr) => {
-    if (partyAbbr === 'D') {
-      return 'democrat'
+          return resolve(returnLegislators(conv, {
+            senate: result.senate,
+            house: result.house
+          }));
+        })
+        .catch(reject);
     }
 
-    if (partyAbbr === 'R') {
-      return 'republican'
-    }
-
-    return partyAbbr;
-  };
-
-  conv.ask(text.LEGISLATOR
-    .replace('{{sen_party}}', deabbrivate(senator.party))
-    .replace('{{sen}}', senator.formatName)
-    .replace('{{rep}}', representative.formatName)
-    .replace('{{rep_party}}', deabbrivate(representative.party))
-  );
-
-  conv.ask(new Table({
-    title: 'Your Legislators',
-    subtitle: `Senate District ${senate} House District ${house}`,
-    columns: [{
-      header: 'Representative',
-      align: 'CENTER'
-    }, {
-      header: 'Senator',
-      align: 'CENTER'
-    }],
-    rows: [[representative.formatName, senator.formatName]]
-  }));
-
-  return conv.ask(new Suggestions([
-    'Representative details',
-    'Senator details'
-  ]));
+    return resolve(returnLegislators(conv, districts));
+  });
 };
 
 exports.legislatorDetailIntent = {
@@ -228,4 +203,58 @@ const deabbrivate = (partyAbbr) => {
   }
 
   return partyAbbr;
+};
+
+const returnLegislators = (conv, districts) => {
+  console.log('legislature.returnLegislators');
+  console.log(districts);
+
+  const { house, senate } = districts;
+
+  conv.contexts.set(context.HOUSE, lifespan.LONG, {
+    district: house
+  });
+
+  conv.contexts.set(context.SENATE, lifespan.LONG, {
+    district: senate
+  });
+
+  // query le service for legislators
+  const legislators = le.search().legislators;
+
+  const senator = legislators.filter((item) => item.house === 'S' && item.district === senate.toString())[0];
+  const representative = legislators.filter((item) => item.house === 'H' && item.district === house.toString())[0];
+
+  conv.contexts.set(context.SENATOR, lifespan.LONG, {
+    official: senator
+  });
+
+  conv.contexts.set(context.REPRESENTATIVE, lifespan.LONG, {
+    official: representative
+  });
+
+  conv.ask(text.LEGISLATOR
+    .replace('{{sen_party}}', deabbrivate(senator.party))
+    .replace('{{sen}}', senator.formatName)
+    .replace('{{rep}}', representative.formatName)
+    .replace('{{rep_party}}', deabbrivate(representative.party))
+  );
+
+  conv.ask(new Table({
+    title: 'Your Legislators',
+    subtitle: `Senate District ${senate} House District ${house}`,
+    columns: [{
+      header: 'Representative',
+      align: 'CENTER'
+    }, {
+      header: 'Senator',
+      align: 'CENTER'
+    }],
+    rows: [[representative.formatName, senator.formatName]]
+  }));
+
+  return conv.ask(new Suggestions([
+    'Representative details',
+    'Senator details'
+  ]));
 };
