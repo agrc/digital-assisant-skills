@@ -1,24 +1,12 @@
 'use strict';
 
 const { dialogflow, Permission, BasicCard, Button, Image, Table, Suggestions } = require('actions-on-google');
+const districtIntent = require('./intents/district');
 const text = require('./config/text');
 const { search } = require('./services/agrc');
 const leCache = require('./mock_data/legislators_endpoint.json');
 
 const app = dialogflow({ debug: true });
-
-const context = {
-  FROM: 'what-intent',
-  SENATE: 'what-senate-district',
-  HOUSE: 'what-house-district',
-  SENATOR: 'who-senator',
-  REPRESENTATIVE: 'who-representative'
-};
-const lifespan = {
-  ONCE: 1,
-  DEFAULT: 5,
-  LONG: 100
-};
 
 const requestLocation = (conv, text) => {
   return conv.ask(new Permission({
@@ -248,6 +236,15 @@ const routeRequest = (conv) => {
   }
 };
 
+const addIntents = (...args) => {
+  for (let i = 0; i < args.length; i++) {
+    for (const key in args[i]) {
+      if (args[i].hasOwnProperty(key)) app.intent(key, args[i][key]);
+    }
+  }
+};
+
+
 app.intent('location received', (conv, _, confirmationGranted) => {
   console.log('INTENT: location received');
 
@@ -258,16 +255,6 @@ app.intent('location received', (conv, _, confirmationGranted) => {
   }
 
   return routeRequest(conv);
-});
-
-app.intent('what is my district', (conv) => {
-  console.log('INTENT: what is my district');
-
-  conv.contexts.set(context.FROM, lifespan.ONCE, {
-    intent: 'district'
-  });
-
-  return requestLocation(conv, 'To find your district');
 });
 
 app.intent('who represents me', (conv) => {
@@ -477,5 +464,7 @@ app.intent('Default Welcome Intent', (conv) => {
     'When is the session'
   ]));
 });
+
+addIntents(districtIntent);
 
 module.exports = app;
