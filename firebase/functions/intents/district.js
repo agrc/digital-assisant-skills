@@ -4,14 +4,6 @@ const location = require('./location');
 const agrc = require('../services/agrc');
 const text = require('../config/text');
 
-const getLocation = (conv) => {
-  if (!conv.device.location) {
-    return false;
-  }
-
-  return conv.device.location.coordinates;
-}
-
 exports.findDistricts = (conv) => {
   console.log('district.findDistricts');
 
@@ -78,4 +70,12 @@ exports.districtIntent = {
 
     return location.requestLocation(conv, 'To find your district');
   }
+};
+
+const getLocation = (conv) => {
+  if (!conv.device.location) {
+    return false;
+  }
+
+  return conv.device.location.coordinates;
 };
