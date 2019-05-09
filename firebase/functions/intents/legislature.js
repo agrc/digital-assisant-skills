@@ -217,3 +217,15 @@ exports.partyStatisticsIntent = {
     }));
   }
 };
+
+const deabbrivate = (partyAbbr) => {
+  if (partyAbbr === 'D') {
+    return 'democrat'
+  }
+
+  if (partyAbbr === 'R') {
+    return 'republican'
+  }
+
+  return partyAbbr;
+};
