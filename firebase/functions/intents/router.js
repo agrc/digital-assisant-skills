@@ -1,3 +1,5 @@
+'use strict';
+
 const { context } = require('../config/config');
 const district = require('./district');
 const legislature = require('./legislature');

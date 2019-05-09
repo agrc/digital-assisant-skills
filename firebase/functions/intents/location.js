@@ -1,3 +1,5 @@
+'use strict';
+
 const { Permission } = require('actions-on-google');
 const routeRequest = require('./router');
 

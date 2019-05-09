@@ -1,3 +1,5 @@
+'use strict';
+
 const { BasicCard, Button, Image, Suggestions, Table } = require('actions-on-google');
 const location = require('./location');
 const { context, lifespan } = require('../config/config');

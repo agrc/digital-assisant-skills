@@ -1,5 +1,6 @@
-const { BasicCard, Button, Image, Suggestions } = require('actions-on-google');
+'use strict';
 
+const { BasicCard, Button, Image, Suggestions } = require('actions-on-google');
 const text = require('../config/text');
 
 module.exports = {

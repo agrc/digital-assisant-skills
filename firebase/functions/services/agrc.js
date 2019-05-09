@@ -1,3 +1,5 @@
+'use strict';
+
 const { apiKey } = require('../config/config');
 const { text } = require('../config/text');
 const rp = require('request-promise');

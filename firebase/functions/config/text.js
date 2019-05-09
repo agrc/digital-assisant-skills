@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   WELCOME: 'Welcome to the Utah Voting Information Assistant. Ask your question or ask for help to be guided through the questions I can answer.',
   DISTRICT: 'You are in senate district {{senate}} and house district {{house}}.',

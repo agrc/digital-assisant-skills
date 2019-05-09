@@ -1,3 +1,5 @@
+'use strict';
+
 const { Suggestions } = require('actions-on-google');
 const text = require('../config/text');
 

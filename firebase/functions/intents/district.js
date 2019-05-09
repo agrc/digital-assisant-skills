@@ -1,3 +1,5 @@
+'use strict';
+
 const { Table, Suggestions } = require('actions-on-google');
 const { context, lifespan } = require('../config/config');
 const location = require('./location');
