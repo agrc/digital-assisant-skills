@@ -4,6 +4,7 @@ const { dialogflow, BasicCard, Button, Image, Suggestions } = require('actions-o
 const { districtIntent } = require('./intents/district');
 const { howManyLegislatorsIntent, partyStatisticsIntent, representMeIntent, legislatorDetailIntent } = require('./intents/legislature');
 const { locationReceivedIntent } = require('./intents/location');
+const helpIntent = require('./intents/help');
 const sessionItent = require('./intents/session');
 const text = require('./config/text');
 
@@ -25,17 +26,6 @@ app.intent('specific legislator details', (conv) => {
   });
 
   return requestLocation(conv, 'To find details about your elected official');
-});
-
-app.intent('help me', (conv) => {
-  conv.ask('I can find out your legislative district, who your legislators are, how many, when the sessions are. Just ask!');
-
-  return conv.ask(new Suggestions([
-    'What is my district',
-    'How many legislators',
-    'How many democrats',
-    'When is the session'
-  ]));
 });
 
 app.intent('Default Welcome Intent', (conv) => {
@@ -72,6 +62,7 @@ addIntents(
   partyStatisticsIntent,
   sessionItent,
   representMeIntent
+  helpIntent
 );
 
 module.exports = app;

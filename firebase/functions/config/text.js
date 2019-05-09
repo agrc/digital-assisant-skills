@@ -8,5 +8,6 @@ module.exports = {
   COUNT: 'There are {{total}} total legislators -- with {{sens}} senators and {{reps}} representatives.',
   COUNT_REPROMPT: 'Do you want to hear the current political party breakdown?',
   PARTY_STATS: 'There are {{dems}} democrats and {{reps}} republicans. The democrats make up {{dem_percent}}% and the republicans {{rep_percent}}%.',
-  SESSION: 'The {{year}} legislative session{{inSession}} {{tense}} from January {{start}} to {{end}}.'
+  SESSION: 'The {{year}} legislative session{{inSession}} {{tense}} from January {{start}} to {{end}}.',
+  HELP: 'I can find out your legislative district, who your legislators are, how many, when the sessions are. Just ask!'
 };
