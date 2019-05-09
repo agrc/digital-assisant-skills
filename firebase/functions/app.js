@@ -1,6 +1,6 @@
 'use strict';
 
-const { dialogflow, Permission } = require('actions-on-google');
+const { dialogflow, Permission, BasicCard, Button, Image, Table, Suggestions } = require('actions-on-google');
 const text = require('./config/text');
 const { search } = require('./services/agrc');
 const leCache = require('./mock_data/legislators_endpoint.json');
@@ -21,12 +21,10 @@ const lifespan = {
 };
 
 const requestLocation = (conv, text) => {
-  const options = {
+  return conv.ask(new Permission({
     context: text,
-    // Ask for more than one permission. User can authorize all or none.
-    permissions: ['DEVICE_PRECISE_LOCATION'],
-  };
-  conv.ask(new Permission(options));
+    permissions: ['DEVICE_PRECISE_LOCATION']
+  }));
 };
 
 const getLocation = (conv) => {
@@ -55,7 +53,7 @@ const getDistricts = (conv) => {
 };
 
 const getOfficials = (conv) => {
-  const data = conv.contexts.get(context.SENATOR);
+  const data = conv.contexts.get(context.HOUSE);
 
   if (!data) {
     console.log('missing official context');
@@ -108,7 +106,25 @@ const routeRequest = (conv) => {
           district: senate
         });
 
-        conv.ask(text.DISTRICT.replace('{{house}}', house).replace('{{senate}}', senate));
+        conv.ask(text.DISTRICT
+          .replace('{{house}}', house)
+          .replace('{{senate}}', senate));
+
+        conv.ask(new Table({
+          title: 'Your districts',
+          columns: [{
+            header: 'Senate District',
+            align: 'CENTER'
+          }, {
+            header: 'House District',
+            align: 'CENTER'
+          }],
+          rows: [[senate.toString(), house.toString()]]
+        }));
+
+        conv.ask(new Suggestions([
+          'Who represents me'
+        ]));
 
         return conv.ask(text.DISTRICT_FOLLOW);
       });
@@ -151,12 +167,30 @@ const routeRequest = (conv) => {
         return partyAbbr;
       };
 
-      return conv.ask(text.LEGISLATOR
+      conv.ask(text.LEGISLATOR
         .replace('{{sen_party}}', deabbrivate(senator.party))
         .replace('{{sen}}', senator.formatName)
         .replace('{{rep}}', representative.formatName)
         .replace('{{rep_party}}', deabbrivate(representative.party))
       );
+
+      conv.ask(new Table({
+        title: 'Your Legislators',
+        subtitle: `Senate District ${senate} House District ${house}`,
+        columns: [{
+          header: 'Representative',
+          align: 'CENTER'
+        }, {
+          header: 'Senator',
+          align: 'CENTER'
+        }],
+        rows: [[representative.formatName, senator.formatName]]
+      }));
+
+      return conv.ask(new Suggestions([
+        'Representative details',
+        'Senator details'
+      ]));
     }
     case 'legislator-details': {
       // get officials
@@ -179,13 +213,34 @@ const routeRequest = (conv) => {
         return conv.ask('Which branch are you insterested in?');
       }
 
-      return conv.ask(text.DETAILS
+      conv.ask(text.DETAILS
         .replace('{{official}}', data.formatName)
         .replace('{{profession}}', data.profession)
         .replace('{{education}}', data.education)
         .replace('{{type}}', data.branch)
         .replace('{{serviceStart}}', data.serviceStart)
       );
+
+      return conv.ask(new BasicCard({
+        image: new Image({
+          url: data.image,
+          alt: data.formatName
+        }),
+        title: data.formatName,
+        subtitle: data.branch,
+        text: `**District**: ${data.district}\r\n\r\n` +
+          `**Counties**: ${data.counties}\r\n\r\n` +
+          `**Profession**: ${data.profession}\r\n\r\n` +
+          `**Education**: ${data.education}\r\n\r\n` +
+          `**email**: ${data.email}\r\n\r\n` +
+          `**cell**: ${data.cell}`,
+        buttons: [
+          new Button({
+            title: 'Legislation',
+            url: data.legislation
+          })
+        ]
+      }));
     }
     default: {
       return conv.ask(text.WELCOME);
@@ -248,11 +303,28 @@ app.intent('how many legislators', (conv) => {
     }
   });
 
-  return conv.ask(text.COUNT
+  conv.ask(text.COUNT
     .replace('{{total}}', reps + sens)
     .replace('{{sens}}', sens)
     .replace('{{reps}}', reps)
   );
+
+  conv.ask(new Table({
+    title: `Legislators: ${reps + sens}`,
+    columns: [{
+      header: 'Senators',
+      align: 'CENTER'
+    }, {
+      header: 'Representatives',
+      align: 'CENTER'
+    }],
+    rows: [[sens.toString(), reps.toString()]]
+  }));
+
+  return conv.ask(new Suggestions([
+    'How many democrats',
+    'How many republicans'
+  ]));
 });
 
 app.intent('party statistics', (conv) => {
@@ -270,12 +342,18 @@ app.intent('party statistics', (conv) => {
 
   const total = reps + dems;
 
-  return conv.ask(text.PARTY_STATS
+  conv.ask(text.PARTY_STATS
     .replace('{{dems}}', dems)
     .replace('{{reps}}', reps)
     .replace('{{dem_percent}}', ((dems / total) * 100).toFixed(1))
     .replace('{{rep_percent}}', ((reps / total) * 100).toFixed(1))
   );
+
+  return conv.ask(new BasicCard({
+    title: 'Party Statistics',
+    text: '**Democrats**: ' + dems.toString() +
+      '\r\n\r\n**Republicans**: ' + reps.toString()
+  }));
 });
 
 app.intent('when is the session', (conv, params) => {
@@ -342,19 +420,35 @@ app.intent('when is the session', (conv, params) => {
   }
 
   let speak = '';
-  if (today > start && today < endsion) {
+  if (today > start && today < end) {
     speak = ' is currently in progress and';
   }
 
-  return conv.ask(text.SESSION
+  conv.ask(text.SESSION
     .replace('{{year}}', start.toLocaleDateString('en-US', { year: 'numeric' }))
     .replace('{{inSession}}', speak)
     .replace('{{tense}}', tense)
     .replace('{{start}}', start.toLocaleDateString('en-US', { day: 'numeric' }))
     .replace('{{end}}', end.toLocaleDateString())
-  )
+  );
+
+  return conv.ask(new Suggestions([
+    'When is the next session',
+    'When is the 2050 session'
+  ]));
 });
 
-app.intent('Default Welcome Intent', (conv) => conv.ask(text.WELCOME));
+app.intent('Default Welcome Intent', (conv) => {
+  conv.ask(text.WELCOME);
+
+  return conv.ask(new Suggestions([
+    'What is my district',
+    // 'Who represents me',
+    // 'Representative details',
+    'How many legislators',
+    'How many democrats',
+    'When is the session'
+  ]));
+});
 
 module.exports = app;
