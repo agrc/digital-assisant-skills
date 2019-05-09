@@ -1,24 +1,8 @@
-const { BasicCard, Button, Image, Table, Suggestions } = require('actions-on-google');
-const { context, lifespan } = require('../config/config');
+const { BasicCard, Button, Image } = require('actions-on-google');
+const { context } = require('../config/config');
 const district = require('./district');
+const legislature = require('./legislature');
 const text = require('../config/text');
-
-const getDistricts = (conv) => {
-  const data = conv.contexts.get(context.HOUSE);
-
-  if (!data) {
-    console.log('missing district context');
-
-    return false;
-  }
-
-  console.log('using district context');
-
-  const senate = conv.contexts.get(context.SENATE).parameters.district;
-  const house = data.parameters.district;
-
-  return { house, senate };
-};
 
 const getOfficials = (conv) => {
   const data = conv.contexts.get(context.REPRESENTATIVE);
@@ -49,67 +33,9 @@ module.exports = (conv) => {
       return district.findDistricts(conv);
     }
     case 'legislature': {
-      console.log('querying legislators');
+      console.log('routing to find legislators');
 
-      // get districts
-      const districts = getDistricts(conv);
-      // if null get location, then get districts
-      if (!districts) {
-        // use agrc service
-      }
-
-      const { house, senate } = districts;
-
-      // query le service for legislators
-      const legislators = leCache.legislators;
-
-      const senator = legislators.filter((item) => item.house === 'S' && item.district === senate.toString())[0];
-      const representative = legislators.filter((item) => item.house === 'H' && item.district === house.toString())[0];
-
-      conv.contexts.set(context.SENATOR, lifespan.LONG, {
-        official: senator
-      });
-
-      conv.contexts.set(context.REPRESENTATIVE, lifespan.LONG, {
-        official: representative
-      });
-
-      const deabbrivate = (partyAbbr) => {
-        if (partyAbbr === 'D') {
-          return 'democrat'
-        }
-
-        if (partyAbbr === 'R') {
-          return 'republican'
-        }
-
-        return partyAbbr;
-      };
-
-      conv.ask(text.LEGISLATOR
-        .replace('{{sen_party}}', deabbrivate(senator.party))
-        .replace('{{sen}}', senator.formatName)
-        .replace('{{rep}}', representative.formatName)
-        .replace('{{rep_party}}', deabbrivate(representative.party))
-      );
-
-      conv.ask(new Table({
-        title: 'Your Legislators',
-        subtitle: `Senate District ${senate} House District ${house}`,
-        columns: [{
-          header: 'Representative',
-          align: 'CENTER'
-        }, {
-          header: 'Senator',
-          align: 'CENTER'
-        }],
-        rows: [[representative.formatName, senator.formatName]]
-      }));
-
-      return conv.ask(new Suggestions([
-        'Representative details',
-        'Senator details'
-      ]));
+      return legislature.findLegislators(conv);
     }
     case 'legislator-details': {
       // get officials

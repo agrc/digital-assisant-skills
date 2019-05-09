@@ -3,7 +3,7 @@
 const { dialogflow, BasicCard, Button, Image, Suggestions } = require('actions-on-google');
 const { districtIntent } = require('./intents/district');
 const { howManyLegislatorsIntent, partyStatisticsIntent, representMeIntent, legislatorDetailIntent } = require('./intents/legislature');
-const { requestLocationIntent, locationReceivedIntent } = require('./intents/location');
+const { locationReceivedIntent } = require('./intents/location');
 const sessionItent = require('./intents/session');
 const text = require('./config/text');
 
@@ -16,16 +16,6 @@ const addIntents = (...args) => {
     }
   }
 };
-
-app.intent('who represents me', (conv) => {
-  console.log('INTENT: who represents me');
-
-  conv.contexts.set(context.FROM, lifespan.ONCE, {
-    intent: 'legislature'
-  });
-
-  return requestLocation(conv, 'To find your elected officials');
-});
 
 app.intent('specific legislator details', (conv) => {
   console.log('INTENT: specific legislator details');
@@ -80,7 +70,8 @@ addIntents(
   locationReceivedIntent,
   howManyLegislatorsIntent,
   partyStatisticsIntent,
-  sessionItent
+  sessionItent,
+  representMeIntent
 );
 
 module.exports = app;
