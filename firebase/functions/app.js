@@ -438,6 +438,19 @@ app.intent('when is the session', (conv, params) => {
   ]));
 });
 
+app.intent('help me', (conv) => {
+  conv.ask('I can find out your legislative district, who your legislators are, how many, when the sessions are. Just ask!');
+
+  return conv.ask(new Suggestions([
+    'What is my district',
+    // 'Who represents me',
+    // 'Representative details',
+    'How many legislators',
+    'How many democrats',
+    'When is the session'
+  ]));
+});
+
 app.intent('Default Welcome Intent', (conv) => {
   conv.ask(text.WELCOME);
 
