@@ -24,7 +24,7 @@ module.exports = {
     return conv.ask(new Suggestions([
       'What is my district',
       'Who represents me',
-      // 'Representative details',
+      'My Senator',
       'How many legislators',
       'How many democrats',
       'When is the session'

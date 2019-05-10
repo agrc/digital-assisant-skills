@@ -25,43 +25,32 @@ exports.findLegislators = (conv) => {
 
   return new Promise((resolve, reject) => {
     // get districts
+    console.log('1: trying for districts')
     const districts = contextHelper.getDistricts(conv);
 
     // if null get location, then get districts
     if (!districts) {
-      // use agrc service
-      const location = contextHelper.getLocation(conv);
+      console.log('no districts');
 
-      if (!location) {
-        return location.requestLocation(conv, 'To find your legislator');
-      }
-
-      const options = {
-        spatialReference: 4326,
-        geometry: `point:[${location.longitude},${location.latitude}]`
-      };
-
-      return agrc.search('sgid10.political.officialslookup', ['repdist', 'sendist'], options)
-        .then(result => {
-          if (result.message) {
-            return { error: result.message };
-          }
-
-          return resolve(returnLegislators(conv, {
-            senate: result.senate,
-            house: result.house
-          }));
-        })
+      return getDistricts(conv)
+        .then((result) => resolve(returnLegislators(conv, result)))
         .catch(reject);
     }
 
+    console.log('district in contexts returning');
     return resolve(returnLegislators(conv, districts));
   });
 };
 
 exports.legislatorDetailIntent = {
-  'specific legislator details': (conv) => {
+  'specific legislator details': (conv, params) => {
     console.log('INTENT: specific legislator details');
+
+    console.log(params);
+
+    conv.contexts.set(`${context.FROM}-params`, lifespan.LONG, {
+       branch: params.Branch
+    });
 
     conv.contexts.set(context.FROM, lifespan.ONCE, {
       intent: 'legislator-details'
@@ -71,56 +60,91 @@ exports.legislatorDetailIntent = {
   }
 };
 
-exports.getSpecificLegislator = (conv) => {
-  console.log('legislature.getSpecificLegislator');
-  // get officials
-  const officials = contextHelper.getOfficials(conv);
-  // if null get location, then get officials
-  if (!officials) {
-    // use agrc service
-  }
+exports.findSpecificLegislator = (conv) => {
+  console.log('legislature.findSpecificLegislator');
 
-  let data;
-  const { representative, senator, official } = officials;
+  const returnLegislator = (conv, officials) => {
+    let data;
+    const { representative, senator, official } = officials;
 
-  if (official === 'house') {
-    data = representative;
-    data.branch = 'representative';
-  } else if (official === 'senate') {
-    data = senator;
-    data.branch = 'senator';
-  } else {
-    return conv.ask('Which branch are you insterested in?');
-  }
+    if (official === 'house') {
+      data = representative;
+      data.branch = 'representative';
+    } else if (official === 'senate') {
+      data = senator;
+      data.branch = 'senator';
+    } else {
+      return conv.ask('Which branch are you interested in?');
+    }
 
-  conv.ask(text.DETAILS
-    .replace('{{official}}', data.formatName)
-    .replace('{{profession}}', data.profession)
-    .replace('{{education}}', data.education)
-    .replace('{{type}}', data.branch)
-    .replace('{{serviceStart}}', data.serviceStart)
-  );
+    conv.ask(text.DETAILS
+      .replace('{{official}}', data.formatName)
+      .replace('{{profession}}', data.profession)
+      .replace('{{education}}', data.education)
+      .replace('{{type}}', data.branch)
+      .replace('{{serviceStart}}', data.serviceStart)
+    );
 
-  return conv.ask(new BasicCard({
-    image: new Image({
-      url: data.image,
-      alt: data.formatName
-    }),
-    title: data.formatName,
-    subtitle: data.branch,
-    text: `**District**: ${data.district}\r\n\r\n` +
-      `**Counties**: ${data.counties}\r\n\r\n` +
-      `**Profession**: ${data.profession}\r\n\r\n` +
-      `**Education**: ${data.education}\r\n\r\n` +
-      `**email**: ${data.email}\r\n\r\n` +
-      `**cell**: ${data.cell}`,
-    buttons: [
-      new Button({
-        title: 'Legislation',
-        url: data.legislation
-      })
-    ]
-  }));
+    return conv.ask(new BasicCard({
+      image: new Image({
+        url: data.image,
+        alt: data.formatName
+      }),
+      title: data.formatName,
+      subtitle: data.branch,
+      text: `**District**: ${data.district}\r\n\r\n` +
+        `**Counties**: ${data.counties}\r\n\r\n` +
+        `**Profession**: ${data.profession}\r\n\r\n` +
+        `**Education**: ${data.education}\r\n\r\n` +
+        `**email**: ${data.email}\r\n\r\n` +
+        `**cell**: ${data.cell}`,
+      buttons: [
+        new Button({
+          title: 'Legislation',
+          url: data.legislation
+        })
+      ]
+    }));
+  };
+
+  return new Promise((resolve, reject) => {
+    // get officials
+    let officials = contextHelper.getOfficials(conv);
+    // if null get location, then get officials
+    if (!officials) {
+      const districts = contextHelper.getDistricts(conv);
+
+      if (!districts) {
+        return getDistricts(conv)
+          .then((result) => {
+            officials = getSenatorRepFromDistrict(conv, result);
+
+            if (!('official' in officials)) {
+              console.log('missing official key');
+              console.log(conv.contexts.input['what-intent-params']);
+
+              officials.official = conv.contexts.input['what-intent-params'].parameters.branch;
+              console.log(officials)
+            }
+
+            return resolve(returnLegislator(conv, officials));
+          })
+          .catch(reject);
+      }
+
+      officials = getSenatorRepFromDistrict(conv, districts);
+
+      if (!('official' in officials)) {
+        console.log(conv.contexts.input['what-intent-params']);
+
+        officials.official = conv.contexts.input['what-intent-params'].parameters.branch;
+      }
+
+      return resolve(returnLegislator(conv, officials));
+    }
+
+    return resolve(returnLegislator(conv, officials));
+  });
 };
 
 exports.howManyLegislatorsIntent = {
@@ -219,19 +243,7 @@ const returnLegislators = (conv, districts) => {
     district: senate
   });
 
-  // query le service for legislators
-  const legislators = le.search().legislators;
-
-  const senator = legislators.filter((item) => item.house === 'S' && item.district === senate.toString())[0];
-  const representative = legislators.filter((item) => item.house === 'H' && item.district === house.toString())[0];
-
-  conv.contexts.set(context.SENATOR, lifespan.LONG, {
-    official: senator
-  });
-
-  conv.contexts.set(context.REPRESENTATIVE, lifespan.LONG, {
-    official: representative
-  });
+  const { senator, representative } = getSenatorRepFromDistrict(conv, districts);
 
   conv.ask(text.LEGISLATOR
     .replace('{{sen_party}}', deabbrivate(senator.party))
@@ -257,4 +269,66 @@ const returnLegislators = (conv, districts) => {
     'Representative details',
     'Senator details'
   ]));
+};
+
+const getSenatorRepFromDistrict = (conv, districts) => {
+  console.log('legislature.getSenatorRepFromDistrict');
+  console.log(districts);
+
+  const { house, senate } = districts;
+  // query le service for legislators
+  const legislators = le.search().legislators;
+
+  const senator = legislators.filter((item) => item.house === 'S' && item.district === senate.toString())[0];
+  const representative = legislators.filter((item) => item.house === 'H' && item.district === house.toString())[0];
+
+  conv.contexts.set(context.SENATOR, lifespan.LONG, {
+    official: senator
+  });
+
+  conv.contexts.set(context.REPRESENTATIVE, lifespan.LONG, {
+    official: representative
+  });
+
+  return { senator, representative };
+};
+
+const getDistricts = (conv) => {
+  console.log('legislature.getDistricts');
+
+  const location = contextHelper.getLocation(conv);
+
+  if (!location) {
+    return location.requestLocation(conv, 'To find your legislator');
+  }
+
+  const options = {
+    spatialReference: 4326,
+    geometry: `point:[${location.longitude},${location.latitude}]`
+  };
+
+  return agrc.search('sgid10.political.officialslookup', ['repdist', 'sendist'], options)
+    .then(result => {
+      if (result.message) {
+        return { error: result.message };
+      }
+
+      const senate = result.senate;
+      const house = result.house
+
+      conv.contexts.set(context.HOUSE, lifespan.LONG, {
+        district: house
+      });
+
+      conv.contexts.set(context.SENATE, lifespan.LONG, {
+        district: senate
+      });
+
+      console.log(`returning senate: ${senate}. house: ${house}`);
+
+      return {
+        senate,
+        house
+      };
+    });
 };

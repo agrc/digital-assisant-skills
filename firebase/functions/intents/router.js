@@ -24,7 +24,7 @@ module.exports = (conv) => {
     case 'legislator-details': {
       console.log('routing to specific legislator');
 
-      return legislature.getSpecificLegislator(conv);
+      return legislature.findSpecificLegislator(conv);
     }
     default: {
       return conv.ask(text.WELCOME);
