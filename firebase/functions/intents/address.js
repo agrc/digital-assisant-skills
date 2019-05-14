@@ -2,6 +2,7 @@
 const agrc = require('../services/agrc');
 const routeRequest = require('./router');
 const contextConfig = require('../config/config');
+const util = require('../util');
 
 module.exports = {
   'address.get': (conv) => {
@@ -46,11 +47,23 @@ module.exports = {
     });
 
     if (!addressParts['street-address']) {
-      return conv.ask('and the street address?');
+      return conv.ask(util.randomize(
+        'and the street address?',
+        'What was the street address?',
+        'How about the street address?',
+        'I\'ll just need the street'
+      ));
     }
 
     if (!addressParts['zip-code'] && !addressParts.city && !addressParts['subadmin-area']) {
-      return conv.ask('and the city or zip code?');
+      return conv.ask(util.randomize(
+        'and the city or zip code?',
+        'What was the city?',
+        'What was the zip code?',
+        'How about the city?',
+        'How about the zip code?',
+        'I\'ll just need the city or zip code'
+      ));
     }
 
     // TODO: ask for confirmation?
