@@ -5,8 +5,6 @@ const text = require('../config/text');
 
 module.exports = {
   'default.welcome': (conv) => {
-    console.log(conv.user);
-
     if (conv.user.last.seen) {
       conv.ask('Welcome back! What would you like to learn today?');
       conv.ask(new BasicCard({
