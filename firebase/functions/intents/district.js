@@ -1,7 +1,6 @@
 'use strict';
 
 const { Table, Suggestions } = require('actions-on-google');
-const { context, lifespan } = require('../config/config');
 const agrc = require('../services/agrc');
 const contextHelper = require('../context')
 const location = require('./location');
@@ -11,9 +10,7 @@ exports.districtIntent = {
   'district.mine': async(conv) => {
     console.log('INTENT: what is my district');
 
-    conv.contexts.set(context.FROM, lifespan.LONG, {
-      intent: 'district'
-    });
+    conv.user.storage.intent = 'district';
 
     let districts = contextHelper.getDistricts(conv)
 
@@ -75,13 +72,11 @@ const findDistricts = async (conv) => {
     return conv.ask(result.message);
   }
 
-      conv.contexts.set(context.HOUSE, lifespan.LONG, {
-        district: house
-      });
+  const senate = result.senate;
+  const house = result.house;
 
-      conv.contexts.set(context.SENATE, lifespan.LONG, {
-        district: senate
-      });
+  conv.user.storage.senateDistrict = senate;
+  conv.user.storage.houseDistrict = house;
 
   return sayDistrict(conv, house, senate);
 };

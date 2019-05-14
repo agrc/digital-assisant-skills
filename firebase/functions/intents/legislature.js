@@ -12,9 +12,7 @@ exports.legislatureIntents = {
   'legislature.mine': (conv) => {
     console.log('INTENT: who represents me');
 
-    conv.contexts.set(context.FROM, lifespan.ONCE, {
-      intent: 'legislature'
-    });
+    conv.user.storage.intent = 'legislature.mine';
 
     if (contextHelper.getLocation(conv) || contextHelper.getDistricts(conv)) {
       return findLegislators(conv);
@@ -27,13 +25,8 @@ exports.legislatureIntents = {
 
     console.log(params);
 
-    conv.contexts.set(`${context.FROM}-params`, lifespan.LONG, {
-      branch: params.Branch
-    });
-
-    conv.contexts.set(context.FROM, lifespan.ONCE, {
-      intent: 'legislator-details'
-    });
+    conv.user.storage.branch = params.Branch;
+    conv.user.storage.intent = 'legislator.specific';
 
     if (contextHelper.getLocation(conv) || contextHelper.getDistricts(conv) || contextHelper.getOfficials(conv)) {
       return findSpecificLegislator(conv);
@@ -109,10 +102,6 @@ exports.countIntents = {
     }));
   }
 };
-
-exports.findLegislators;
-
-exports.findSpecificLegislator;
 
 const findLegislators = (conv) => {
   console.log('legislature.findLegislators');
@@ -197,9 +186,8 @@ const findSpecificLegislator = (conv) => {
 
             if (!('official' in officials)) {
               console.log('missing official key');
-              console.log(conv.contexts.input['what-intent-params']);
 
-              officials.official = conv.contexts.input['what-intent-params'].parameters.branch;
+              officials.official = conv.user.storage.branch;
               console.log(officials)
             }
 
@@ -211,9 +199,7 @@ const findSpecificLegislator = (conv) => {
       officials = getSenatorRepFromDistrict(conv, districts);
 
       if (!('official' in officials)) {
-        console.log(conv.contexts.input['what-intent-params']);
-
-        officials.official = conv.contexts.input['what-intent-params'].parameters.branch;
+        officials.official = conv.user.storage.branch;
       }
 
       return resolve(returnLegislator(conv, officials));
@@ -241,13 +227,8 @@ const returnLegislators = (conv, districts) => {
 
   const { house, senate } = districts;
 
-  conv.contexts.set(context.HOUSE, lifespan.LONG, {
-    district: house
-  });
-
-  conv.contexts.set(context.SENATE, lifespan.LONG, {
-    district: senate
-  });
+  conv.user.storage.senateDistrict = senate;
+  conv.user.storage.houseDistrict = house ;
 
   const { senator, representative } = getSenatorRepFromDistrict(conv, districts);
 
@@ -288,13 +269,8 @@ const getSenatorRepFromDistrict = (conv, districts) => {
   const senator = legislators.filter((item) => item.house === 'S' && item.district === senate.toString())[0];
   const representative = legislators.filter((item) => item.house === 'H' && item.district === house.toString())[0];
 
-  conv.contexts.set(context.SENATOR, lifespan.LONG, {
-    official: senator
-  });
-
-  conv.contexts.set(context.REPRESENTATIVE, lifespan.LONG, {
-    official: representative
-  });
+  conv.user.storage.senator = senator;
+  conv.user.storage.representative = representative;
 
   return { senator, representative };
 };
@@ -322,13 +298,8 @@ const getDistricts = (conv) => {
       const senate = result.senate;
       const house = result.house
 
-      conv.contexts.set(context.HOUSE, lifespan.LONG, {
-        district: house
-      });
-
-      conv.contexts.set(context.SENATE, lifespan.LONG, {
-        district: senate
-      });
+      conv.user.storage.senateDistrict = senate;
+      conv.user.storage.houseDistrict = house;
 
       console.log(`returning senate: ${senate}. house: ${house}`);
 
@@ -338,3 +309,8 @@ const getDistricts = (conv) => {
       };
     });
 };
+
+
+exports.findLegislators = findLegislators;
+
+exports.findSpecificLegislator = findSpecificLegislator;

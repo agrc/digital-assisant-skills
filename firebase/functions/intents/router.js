@@ -1,15 +1,13 @@
 'use strict';
 
-const { context } = require('../config/config');
 const district = require('./district');
 const legislature = require('./legislature');
 const text = require('../config/text');
 
 module.exports = (conv) => {
-  const where = conv.contexts.get(context.FROM).parameters.intent;
-  conv.contexts.delete(context.FROM);
+  const where = conv.user.storage.intent;
 
-  console.log(`context.get: ${where}`);
+  console.log(`user.storage.intent: ${where}`);
 
   switch (where) {
     case 'district': {
@@ -17,12 +15,12 @@ module.exports = (conv) => {
 
       return district.findDistricts(conv);
     }
-    case 'legislature': {
+    case 'legislature.mine': {
       console.log('routing to find legislators');
 
       return legislature.findLegislators(conv);
     }
-    case 'legislator-details': {
+    case 'legislator.specific': {
       console.log('routing to specific legislator');
 
       return legislature.findSpecificLegislator(conv);

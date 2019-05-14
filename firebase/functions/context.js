@@ -1,7 +1,5 @@
 'use strict';
 
-const { context } = require('./config/config');
-
 exports.getLocation = (conv) => {
   console.log('context.getLocation');
 
@@ -9,13 +7,6 @@ exports.getLocation = (conv) => {
     console.log('using user stored location');
 
     return conv.user.storage.location;
-  }
-
-  if (conv.contexts.output && conv.contexts.output['geocoded-address']) {
-    console.log('using output context');
-    console.log(conv.contexts.output);
-
-    return conv.contexts.output['geocoded-address'].parameters.point;
   }
 
   if (!conv.device.location) {
@@ -28,26 +19,25 @@ exports.getLocation = (conv) => {
 };
 
 exports.getDistricts = (conv) => {
-  const data = conv.contexts.get(context.HOUSE);
+  const house = conv.user.storage.houseDistrict;
 
-  if (!data) {
-    console.log('missing district context');
+  if (!house) {
+    console.log('missing district storage');
 
     return false;
   }
 
-  console.log('using district context');
+  console.log('using district storage');
 
-  const senate = conv.contexts.get(context.SENATE).parameters.district;
-  const house = data.parameters.district;
+  const senate = conv.user.storage.senateDistrict;
 
   return { house, senate };
 };
 
 exports.getOfficials = (conv) => {
-  const data = conv.contexts.get(context.REPRESENTATIVE);
+  const representative = conv.user.storage.representative;
 
-  if (!data) {
+  if (!representative) {
     console.log('missing official context');
 
     return false;
@@ -55,8 +45,7 @@ exports.getOfficials = (conv) => {
 
   console.log('using official context');
 
-  const senator = conv.contexts.get(context.SENATOR).parameters.official;
-  const representative = data.parameters.official;
+  const senator = conv.user.storage.senator;
 
-  return { representative, senator, official: data.parameters.Branch };
+  return { representative, senator, official: conv.user.storage.branch };
 };
