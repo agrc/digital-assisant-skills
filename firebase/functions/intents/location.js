@@ -4,6 +4,16 @@ const { Permission, Suggestions } = require('actions-on-google');
 const routeRequest = require('./router');
 
 exports.requestLocation = (conv, text) => {
+  console.log('location.requestLocation');
+  console.log(conv.user);
+
+
+  if (conv.user.storage.location) {
+    console.log('user has location, skipping');
+
+    return routeRequest(conv);
+  }
+
   return conv.ask(new Permission({
     context: text,
     permissions: ['DEVICE_PRECISE_LOCATION']
@@ -25,6 +35,10 @@ exports.locationReceivedIntent = {
 
       return conv.ask('Ok, well I can answer other questions without your location. Or you can tell me a Utah address.')
     }
+
+    conv.user.storage.location = location.coordinates;
+
+    console.log(conv.user);
 
     return routeRequest(conv);
   }

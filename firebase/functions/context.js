@@ -3,8 +3,16 @@
 const { context } = require('./config/config');
 
 exports.getLocation = (conv) => {
+  console.log('context.getLocation');
+
+  if (conv.user.storage.location) {
+    console.log('using user stored location');
+
+    return conv.user.storage.location;
+  }
+
   if (conv.contexts.output && conv.contexts.output['geocoded-address']) {
-    console.log('output context');
+    console.log('using output context');
     console.log(conv.contexts.output);
 
     return conv.contexts.output['geocoded-address'].parameters.point;
@@ -13,6 +21,8 @@ exports.getLocation = (conv) => {
   if (!conv.device.location) {
     return false;
   }
+
+  console.log('using permission granted location');
 
   return conv.device.location.coordinates;
 };

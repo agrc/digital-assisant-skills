@@ -7,7 +7,53 @@ const contextHelper = require('../context')
 const location = require('./location');
 const text = require('../config/text');
 
-exports.findDistricts = (conv) => {
+exports.districtIntent = {
+  'district.mine': (conv) => {
+    console.log('INTENT: what is my district');
+
+    conv.contexts.set(context.FROM, lifespan.LONG, {
+      intent: 'district'
+    });
+
+    let districts = contextHelper.getDistricts(conv)
+
+    if (districts) {
+      return sayDistrict(conv, districts.house, districts.senate);
+    }
+
+    if (contextHelper.getLocation(conv)) {
+      return findDistricts(conv);
+    }
+
+    return location.requestLocation(conv, 'To find your district');
+  }
+};
+
+const sayDistrict = (conv, house, senate) => {
+  conv.ask(text.DISTRICT
+    .replace('{{house}}', house)
+    .replace('{{senate}}', senate));
+
+  conv.ask(new Table({
+    title: 'Your districts',
+    columns: [{
+      header: 'Senate District',
+      align: 'CENTER'
+    }, {
+      header: 'House District',
+      align: 'CENTER'
+    }],
+    rows: [[senate.toString(), house.toString()]]
+  }));
+
+  conv.ask(new Suggestions([
+    'Who represents me'
+  ]));
+
+  return conv.ask(text.DISTRICT_FOLLOW);
+};
+
+const findDistricts = (conv) => {
   console.log('district.findDistricts');
 
   const location = contextHelper.getLocation(conv);
@@ -40,38 +86,8 @@ exports.findDistricts = (conv) => {
         district: senate
       });
 
-      conv.ask(text.DISTRICT
-        .replace('{{house}}', house)
-        .replace('{{senate}}', senate));
-
-      conv.ask(new Table({
-        title: 'Your districts',
-        columns: [{
-          header: 'Senate District',
-          align: 'CENTER'
-        }, {
-          header: 'House District',
-          align: 'CENTER'
-        }],
-        rows: [[senate.toString(), house.toString()]]
-      }));
-
-      conv.ask(new Suggestions([
-        'Who represents me'
-      ]));
-
-      return conv.ask(text.DISTRICT_FOLLOW);
+      return sayDistrict(conv, house, senate);
     });
 };
 
-exports.districtIntent = {
-  'district.mine': (conv) => {
-    console.log('INTENT: what is my district');
-
-    conv.contexts.set(context.FROM, lifespan.LONG, {
-      intent: 'district'
-    });
-
-    return location.requestLocation(conv, 'To find your district');
-  }
-};
+exports.findDistricts = findDistricts;

@@ -82,6 +82,8 @@ module.exports = {
         point: result
       });
 
+      conv.user.storage.location = result;
+
       return routeRequest(conv);
     });
   }
@@ -92,28 +94,20 @@ const merge = (a, b) => {
 
   if (a) {
     Object.keys(a).forEach((key) => {
-      console.log(`a key - ${key}: ${a[key]}`);
       if (!a[key] || a[key] === 0) {
-        console.log('skipping');
-
         return;
       }
 
-      console.log(`adding ${a[key]} to merged`);
       merged[key] = a[key];
     });
   }
 
   if (b) {
     Object.keys(b).forEach((key) => {
-      console.log(`b key - ${key}: ${b[key]}`);
       if (!b[key] || b[key] === 0) {
-        console.log('skipping');
-
         return;
       }
 
-      console.log(`adding ${b[key]} to merged`);
       merged[key] = b[key];
     });
   }
