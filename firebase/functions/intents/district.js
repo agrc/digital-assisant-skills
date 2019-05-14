@@ -8,7 +8,7 @@ const location = require('./location');
 const text = require('../config/text');
 
 exports.districtIntent = {
-  'district.mine': (conv) => {
+  'district.mine': async(conv) => {
     console.log('INTENT: what is my district');
 
     conv.contexts.set(context.FROM, lifespan.LONG, {
@@ -22,7 +22,7 @@ exports.districtIntent = {
     }
 
     if (contextHelper.getLocation(conv)) {
-      return findDistricts(conv);
+      return await findDistricts(conv);
     }
 
     return location.requestLocation(conv, 'To find your district');
@@ -53,7 +53,7 @@ const sayDistrict = (conv, house, senate) => {
   return conv.ask(text.DISTRICT_FOLLOW);
 };
 
-const findDistricts = (conv) => {
+const findDistricts = async (conv) => {
   console.log('district.findDistricts');
 
   const location = contextHelper.getLocation(conv);
@@ -69,14 +69,11 @@ const findDistricts = (conv) => {
   };
 
   // TODO extra method from legislature.js
-  return agrc.search('sgid10.political.officialslookup', ['repdist', 'sendist'], options)
-    .then(result => {
-      if (result.message) {
-        return conv.ask(result.message);
-      }
+  const result = await agrc.search('sgid10.political.officialslookup', ['repdist', 'sendist'], options);
 
-      const senate = result.senate;
-      const house = result.house;
+  if (result.message) {
+    return conv.ask(result.message);
+  }
 
       conv.contexts.set(context.HOUSE, lifespan.LONG, {
         district: house
@@ -86,8 +83,7 @@ const findDistricts = (conv) => {
         district: senate
       });
 
-      return sayDistrict(conv, house, senate);
-    });
+  return sayDistrict(conv, house, senate);
 };
 
 exports.findDistricts = findDistricts;
