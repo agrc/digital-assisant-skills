@@ -11,11 +11,19 @@ module.exports = {
 
     return conv.ask('Ok what is the address?');
   },
-  'address.got': (conv, params) => {
+  'address.got': (conv, { location: inputAddress }) => {
     console.log('INTENT: got address');
+    // TODO: Should we be using Place and formattedAddress?
+    // const { Place } = require('actions-on-google');
+    // app.intent('ask_for_place_detail', (conv) => {
+    //   const options = {
+    //     context: 'To find your legislator',
+    //     prompt: 'What is your address?',
+    //   };
+    //   conv.ask(new Place(options));
+    // });
 
     let addressParts = {};
-    let inputAddress = params.location;
     const context = conv.contexts.get(contextConfig.context.GEOCODING);
 
     if (context && 'parameters' in context) {
@@ -46,6 +54,9 @@ module.exports = {
     }
 
     // TODO: ask for confirmation?
+    // https://developers.google.com/actions/assistant/helpers
+    // TODO: read zip code as <say-as interpret-as="digits"></say-as>
+    // https://developers.google.com/actions/reference/ssml
     // conv.ask(`Should I look for ${addressParts['street-address']}, ${zone}?`);
 
     const zone = addressParts.city || addressParts['zip-code'] || addressParts['subadmin-area'];
