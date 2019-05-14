@@ -9,6 +9,19 @@ module.exports = {
 
     if (conv.user.last.seen) {
       conv.ask('Welcome back! What would you like to learn today?');
+      conv.ask(new BasicCard({
+        text: 'Welcome back! What would you like to learn today?',
+        title: 'Utah Voting Information',
+        subtitle: 'Innovation Grant',
+        buttons: new Button({
+          title: 'Developer Docs',
+          url: 'https://github.com/agrc/digital-assistant-skills/',
+        }),
+        image: new Image({
+          url: 'https://vote.utah.gov/images/header/header-seal.png',
+          alt: 'vote logo',
+        })
+      }));
     } else {
       conv.ask(text.WELCOME);
 
