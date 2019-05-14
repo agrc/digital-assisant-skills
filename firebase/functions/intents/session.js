@@ -4,7 +4,7 @@ const { Suggestions } = require('actions-on-google');
 const text = require('../config/text');
 
 module.exports = {
-  'when is the session': (conv, params) => {
+  'session.when': (conv, params) => {
     // The legislative session always starts in January
     const JANUARY = 1;
     // There are 45 days in the session

@@ -8,19 +8,113 @@ const location = require('./location');
 const le = require('../services/le');
 const text = require('../config/text');
 
-exports.representMeIntent = {
-  'who represents me': (conv) => {
+exports.legislatureIntents = {
+  'legislature.mine': (conv) => {
     console.log('INTENT: who represents me');
 
     conv.contexts.set(context.FROM, lifespan.ONCE, {
       intent: 'legislature'
     });
 
+    if (contextHelper.getLocation(conv) || contextHelper.getDistricts(conv)) {
+      return findLegislators(conv);
+    }
+
     return location.requestLocation(conv, 'To find your elected officials');
+  },
+  'legislature.details': (conv, params) => {
+    console.log('INTENT: specific legislator details');
+
+    console.log(params);
+
+    conv.contexts.set(`${context.FROM}-params`, lifespan.LONG, {
+      branch: params.Branch
+    });
+
+    conv.contexts.set(context.FROM, lifespan.ONCE, {
+      intent: 'legislator-details'
+    });
+
+    if (contextHelper.getLocation(conv) || contextHelper.getDistricts(conv) || contextHelper.getOfficials(conv)) {
+      return findSpecificLegislator(conv);
+    }
+
+    return location.requestLocation(conv, 'To find details about your elected official');
   }
 };
 
-exports.findLegislators = (conv) => {
+exports.countIntents = {
+  'legislature.count': (conv) => {
+    const all = le.search().legislators;
+    let sens = 0;
+    let reps = 0;
+
+    all.forEach((legislator) => {
+      if (legislator.house.toLowerCase() === 'h') {
+        reps += 1;
+      } else {
+        sens += 1;
+      }
+    });
+
+    conv.ask(text.COUNT
+      .replace('{{total}}', reps + sens)
+      .replace('{{sens}}', sens)
+      .replace('{{reps}}', reps)
+    );
+
+    conv.ask(new Table({
+      title: `Legislators: ${reps + sens}`,
+      columns: [{
+        header: 'Senators',
+        align: 'CENTER'
+      }, {
+        header: 'Representatives',
+        align: 'CENTER'
+      }],
+      rows: [[sens.toString(), reps.toString()]]
+    }));
+
+    return conv.ask(new Suggestions([
+      'How many democrats',
+      'How many republicans'
+    ]));
+  },
+  'legislature.statistics': (conv) => {
+    const all = le.search().legislators;
+    let dems = 0;
+    let reps = 0;
+
+    all.forEach((legislator) => {
+      if (legislator.party.toLowerCase() === 'r') {
+        reps += 1;
+      } else {
+        dems += 1;
+      }
+    });
+
+    const total = reps + dems;
+
+    conv.ask(text.PARTY_STATS
+      .replace('{{dems}}', dems)
+      .replace('{{reps}}', reps)
+      .replace('{{dem_percent}}', ((dems / total) * 100).toFixed(1))
+      .replace('{{rep_percent}}', ((reps / total) * 100).toFixed(1))
+    );
+
+    return conv.ask(new BasicCard({
+      title: 'Party Statistics',
+      text: '**Democrats**: ' + dems.toString() +
+        '\r\n\r\n**Republicans**: ' + reps.toString()
+    }));
+  }
+};
+
+exports.findLegislators;
+
+exports.findSpecificLegislator;
+
+const findLegislators = (conv) => {
   console.log('legislature.findLegislators');
 
   return new Promise((resolve, reject) => {
@@ -42,25 +136,7 @@ exports.findLegislators = (conv) => {
   });
 };
 
-exports.legislatorDetailIntent = {
-  'specific legislator details': (conv, params) => {
-    console.log('INTENT: specific legislator details');
-
-    console.log(params);
-
-    conv.contexts.set(`${context.FROM}-params`, lifespan.LONG, {
-       branch: params.Branch
-    });
-
-    conv.contexts.set(context.FROM, lifespan.ONCE, {
-      intent: 'legislator-details'
-    });
-
-    return location.requestLocation(conv, 'To find details about your elected official');
-  }
-};
-
-exports.findSpecificLegislator = (conv) => {
+const findSpecificLegislator = (conv) => {
   console.log('legislature.findSpecificLegislator');
 
   const returnLegislator = (conv, officials) => {
@@ -145,76 +221,6 @@ exports.findSpecificLegislator = (conv) => {
 
     return resolve(returnLegislator(conv, officials));
   });
-};
-
-exports.howManyLegislatorsIntent = {
-  'how many legislators': (conv) => {
-    const all = le.search().legislators;
-    let sens = 0;
-    let reps = 0;
-
-    all.forEach((legislator) => {
-      if (legislator.house.toLowerCase() === 'h') {
-        reps += 1;
-      } else {
-        sens += 1;
-      }
-    });
-
-    conv.ask(text.COUNT
-      .replace('{{total}}', reps + sens)
-      .replace('{{sens}}', sens)
-      .replace('{{reps}}', reps)
-    );
-
-    conv.ask(new Table({
-      title: `Legislators: ${reps + sens}`,
-      columns: [{
-        header: 'Senators',
-        align: 'CENTER'
-      }, {
-        header: 'Representatives',
-        align: 'CENTER'
-      }],
-      rows: [[sens.toString(), reps.toString()]]
-    }));
-
-    return conv.ask(new Suggestions([
-      'How many democrats',
-      'How many republicans'
-    ]));
-  }
-};
-
-exports.partyStatisticsIntent = {
-  'party statistics': (conv) => {
-    const all = le.search().legislators;
-    let dems = 0;
-    let reps = 0;
-
-    all.forEach((legislator) => {
-      if (legislator.party.toLowerCase() === 'r') {
-        reps += 1;
-      } else {
-        dems += 1;
-      }
-    });
-
-    const total = reps + dems;
-
-    conv.ask(text.PARTY_STATS
-      .replace('{{dems}}', dems)
-      .replace('{{reps}}', reps)
-      .replace('{{dem_percent}}', ((dems / total) * 100).toFixed(1))
-      .replace('{{rep_percent}}', ((reps / total) * 100).toFixed(1))
-    );
-
-    return conv.ask(new BasicCard({
-      title: 'Party Statistics',
-      text: '**Democrats**: ' + dems.toString() +
-        '\r\n\r\n**Republicans**: ' + reps.toString()
-    }));
-  }
 };
 
 const deabbrivate = (partyAbbr) => {

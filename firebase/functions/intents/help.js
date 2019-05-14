@@ -4,7 +4,7 @@ const { Suggestions } = require('actions-on-google');
 const text = require('../config/text');
 
 module.exports = {
-  'help me': (conv) => {
+  'default.help': (conv) => {
     conv.ask(text.HELP);
 
     return conv.ask(new Suggestions([

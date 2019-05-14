@@ -2,7 +2,7 @@
 
 const { dialogflow } = require('actions-on-google');
 const { districtIntent } = require('./intents/district');
-const { howManyLegislatorsIntent, partyStatisticsIntent, representMeIntent, legislatorDetailIntent } = require('./intents/legislature');
+const { countIntents, legislatureIntents } = require('./intents/legislature');
 const { locationReceivedIntent } = require('./intents/location');
 const helpIntent = require('./intents/help');
 const sessionItent = require('./intents/session');
@@ -23,12 +23,10 @@ addIntents(
   welcomeIntent,
   districtIntent,
   locationReceivedIntent,
-  howManyLegislatorsIntent,
-  partyStatisticsIntent,
+  countIntents,
   sessionItent,
-  representMeIntent,
-  legislatorDetailIntent,
-  helpIntent
+  legislatureIntents,
+  helpIntent,
   addressIntents
 );
 

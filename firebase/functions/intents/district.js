@@ -65,7 +65,7 @@ exports.findDistricts = (conv) => {
 };
 
 exports.districtIntent = {
-  'what is my district': (conv) => {
+  'district.mine': (conv) => {
     console.log('INTENT: what is my district');
 
     conv.contexts.set(context.FROM, lifespan.LONG, {

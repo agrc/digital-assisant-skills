@@ -4,7 +4,7 @@ const { BasicCard, Button, Image, Suggestions } = require('actions-on-google');
 const text = require('../config/text');
 
 module.exports = {
-  'Default Welcome Intent': (conv) => {
+  'default.welcome': (conv) => {
     conv.ask(text.WELCOME);
 
     conv.ask(new BasicCard({
