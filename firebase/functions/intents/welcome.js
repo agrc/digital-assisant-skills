@@ -5,21 +5,27 @@ const text = require('../config/text');
 
 module.exports = {
   'default.welcome': (conv) => {
-    conv.ask(text.WELCOME);
+    console.log(conv.user);
 
-    conv.ask(new BasicCard({
-      text: text.WELCOME,
-      title: 'Utah Voting Information',
-      subtitle: 'Innovation Grant',
-      buttons: new Button({
-        title: 'Developer Docs',
-        url: 'https://github.com/agrc/digital-assistant-skills/',
-      }),
-      image: new Image({
-        url: 'https://vote.utah.gov/images/header/header-seal.png',
-        alt: 'vote logo',
-      })
-    }));
+    if (conv.user.last.seen) {
+      conv.ask('Welcome back! What would you like to learn today?');
+    } else {
+      conv.ask(text.WELCOME);
+
+      conv.ask(new BasicCard({
+        text: text.WELCOME,
+        title: 'Utah Voting Information',
+        subtitle: 'Innovation Grant',
+        buttons: new Button({
+          title: 'Developer Docs',
+          url: 'https://github.com/agrc/digital-assistant-skills/',
+        }),
+        image: new Image({
+          url: 'https://vote.utah.gov/images/header/header-seal.png',
+          alt: 'vote logo',
+        })
+      }));
+    }
 
     return conv.ask(new Suggestions([
       'What is my district',
