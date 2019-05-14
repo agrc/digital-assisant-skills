@@ -68,7 +68,7 @@ exports.districtIntent = {
   'what is my district': (conv) => {
     console.log('INTENT: what is my district');
 
-    conv.contexts.set(context.FROM, lifespan.ONCE, {
+    conv.contexts.set(context.FROM, lifespan.LONG, {
       intent: 'district'
     });
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const { Permission } = require('actions-on-google');
+const { Permission, Suggestions } = require('actions-on-google');
 const routeRequest = require('./router');
 
 exports.requestLocation = (conv, text) => {
@@ -11,14 +11,19 @@ exports.requestLocation = (conv, text) => {
 };
 
 exports.locationReceivedIntent = {
-  'location received': (conv, _, confirmationGranted) => {
+  'location.got': (conv, _, confirmationGranted) => {
     console.log('INTENT: location received');
 
     const { location } = conv.device;
 
     if (!confirmationGranted || !location) {
-      // TODO: ask for address...
-      return conv.ask('Ok, well I can answer other questions without your location');
+      conv.ask(new Suggestions([
+        'How many legislators',
+        'How many democrats',
+        'When is the session'
+      ]));
+
+      return conv.ask('Ok, well I can answer other questions without your location. Or you can tell me a Utah address.')
     }
 
     return routeRequest(conv);

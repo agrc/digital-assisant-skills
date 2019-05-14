@@ -3,6 +3,13 @@
 const { context } = require('./config/config');
 
 exports.getLocation = (conv) => {
+  if (conv.contexts.output && conv.contexts.output['geocoded-address']) {
+    console.log('output context');
+    console.log(conv.contexts.output);
+
+    return conv.contexts.output['geocoded-address'].parameters.point;
+  }
+
   if (!conv.device.location) {
     return false;
   }

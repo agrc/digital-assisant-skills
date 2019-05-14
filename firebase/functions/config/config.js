@@ -6,7 +6,9 @@ exports.context = {
   SENATE: 'what-senate-district',
   HOUSE: 'what-house-district',
   SENATOR: 'who-senator',
-  REPRESENTATIVE: 'who-representative'
+  REPRESENTATIVE: 'who-representative',
+  GEOCODING: 'address-parts',
+  GEOCODED: 'geocoded-address'
 };
 exports.lifespan = {
   ONCE: 1,

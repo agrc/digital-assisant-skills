@@ -41,8 +41,8 @@ exports.geocode = (options) => {
     }
 
     return {
-      x: response.result.location.x,
-      y: response.result.location.y
+      longitude: response.result.location.x,
+      latitude: response.result.location.y
     };
   }).catch((err) => {
     console.error('search issue:', err);

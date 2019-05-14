@@ -7,6 +7,7 @@ const text = require('../config/text');
 
 module.exports = (conv) => {
   const where = conv.contexts.get(context.FROM).parameters.intent;
+  conv.contexts.delete(context.FROM);
 
   console.log(`context.get: ${where}`);
 

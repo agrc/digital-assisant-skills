@@ -7,6 +7,7 @@ const { locationReceivedIntent } = require('./intents/location');
 const helpIntent = require('./intents/help');
 const sessionItent = require('./intents/session');
 const welcomeIntent = require('./intents/welcome');
+const addressIntents = require('./intents/address');
 
 const app = dialogflow({ debug: true });
 
@@ -28,6 +29,7 @@ addIntents(
   representMeIntent,
   legislatorDetailIntent,
   helpIntent
+  addressIntents
 );
 
 module.exports = app;
