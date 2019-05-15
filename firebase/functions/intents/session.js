@@ -4,13 +4,11 @@ const { Suggestions } = require('actions-on-google');
 const text = require('../config/text');
 
 module.exports = {
-  'session.when': (conv, params) => {
+  'session.when': (conv, { year, kindaordinal }) => {
     // The legislative session always starts in January
     const JANUARY = 1;
     // There are 45 days in the session
     const SESSION_DURATION = 45;
-
-    let year = params.year;
 
     console.log(`year entity: ${year} as ${typeof (year)}`);
 
@@ -48,12 +46,12 @@ module.exports = {
     let start = fourthMonday(year);
     let end = sessionEnds(start, SESSION_DURATION);
 
-    if (params.kindaordinal) {
-      if (params.kindaordinal === 'next' && today > start) {
+    if (kindaordinal) {
+      if (kindaordinal === 'next' && today > start) {
         year++;
         start = fourthMonday(year);
         end = sessionEnds(start, SESSION_DURATION);
-      } else if (params.kindaordinal === 'previous' && today < end) {
+      } else if (kindaordinal === 'previous' && today < end) {
         year--;
         start = fourthMonday(year);
         end = sessionEnds(start, SESSION_DURATION);

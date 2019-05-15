@@ -19,12 +19,10 @@ exports.legislatureIntents = {
 
     return await location.requestLocation(conv, 'To find your elected officials');
   },
-  'legislature.details': async (conv, params) => {
+  'legislature.details': async (conv, { 'Branch': branch }) => {
     console.log('INTENT: specific legislator details');
 
-    console.log(params);
-
-    conv.user.storage.branch = params.Branch;
+    conv.user.storage.branch = branch;
     conv.user.storage.intent = 'legislator.specific';
 
     if (storage.getLocation(conv) || storage.getDistricts(conv) || storage.getOfficials(conv)) {
