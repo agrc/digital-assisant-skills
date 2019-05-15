@@ -13,15 +13,6 @@ module.exports = {
   },
   'address.got': async (conv, { location: inputAddress }) => {
     console.log('INTENT: got address');
-    // TODO: Should we be using Place and formattedAddress?
-    // const { Place } = require('actions-on-google');
-    // app.intent('ask_for_place_detail', (conv) => {
-    //   const options = {
-    //     context: 'To find your legislator',
-    //     prompt: 'What is your address?',
-    //   };
-    //   conv.ask(new Place(options));
-    // });
 
     if (conv.user.storage.location) {
       return await routeRequest(conv);
@@ -65,9 +56,11 @@ module.exports = {
     // https://developers.google.com/actions/assistant/helpers
     // TODO: read zip code as <say-as interpret-as="digits"></say-as>
     // https://developers.google.com/actions/reference/ssml
-    // conv.ask(`Should I look for ${addressParts['street-address']}, ${zone}?`);
+
 
     const zone = addressParts.city || addressParts['zip-code'] || addressParts['subadmin-area'];
+
+    conv.ask(`looking for ${addressParts['street-address']}, ${zone}...`);
 
     const result = await agrc.geocode({
       street: addressParts['street-address'],
