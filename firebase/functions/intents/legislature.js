@@ -1,26 +1,25 @@
 'use strict';
 
 const { BasicCard, Button, Image, Suggestions, Table } = require('actions-on-google');
-const { context, lifespan } = require('../config/config');
-const agrc = require('../services/agrc');
-const contextHelper = require('../context');
+const storage = require('../storage');
 const location = require('./location');
 const le = require('../services/le');
 const text = require('../config/text');
+const district = require('./district');
 
 exports.legislatureIntents = {
-  'legislature.mine': (conv) => {
+  'legislature.mine': async (conv) => {
     console.log('INTENT: who represents me');
 
     conv.user.storage.intent = 'legislature.mine';
 
-    if (contextHelper.getLocation(conv) || contextHelper.getDistricts(conv)) {
-      return findLegislators(conv);
+    if (storage.getLocation(conv) || storage.getDistricts(conv)) {
+      return await this.findLegislators(conv);
     }
 
-    return location.requestLocation(conv, 'To find your elected officials');
+    return await location.requestLocation(conv, 'To find your elected officials');
   },
-  'legislature.details': (conv, params) => {
+  'legislature.details': async (conv, params) => {
     console.log('INTENT: specific legislator details');
 
     console.log(params);
@@ -28,11 +27,11 @@ exports.legislatureIntents = {
     conv.user.storage.branch = params.Branch;
     conv.user.storage.intent = 'legislator.specific';
 
-    if (contextHelper.getLocation(conv) || contextHelper.getDistricts(conv) || contextHelper.getOfficials(conv)) {
-      return findSpecificLegislator(conv);
+    if (storage.getLocation(conv) || storage.getDistricts(conv) || storage.getOfficials(conv)) {
+      return await this.findSpecificLegislator(conv);
     }
 
-    return location.requestLocation(conv, 'To find details about your elected official');
+    return await location.requestLocation(conv, 'To find details about your elected official');
   }
 };
 
@@ -103,132 +102,28 @@ exports.countIntents = {
   }
 };
 
-const findLegislators = (conv) => {
+exports.findLegislators = async (conv) => {
   console.log('legislature.findLegislators');
 
-  return new Promise((resolve, reject) => {
-    // get districts
-    console.log('1: trying for districts')
-    const districts = contextHelper.getDistricts(conv);
+  // get districts
+  console.log('1: trying for districts')
+  let districts = storage.getDistricts(conv);
 
-    // if null get location, then get districts
-    if (!districts) {
-      console.log('no districts');
+  // if null get location, then get districts
+  if (!districts) {
+    console.log('no districts');
 
-      return getDistricts(conv)
-        .then((result) => resolve(returnLegislators(conv, result)))
-        .catch(reject);
+    districts = await district.getDistricts(conv);
+
+    if (districts.error) {
+      return conv.ask(error);
     }
-
-    console.log('district in contexts returning');
-    return resolve(returnLegislators(conv, districts));
-  });
-};
-
-const findSpecificLegislator = (conv) => {
-  console.log('legislature.findSpecificLegislator');
-
-  const returnLegislator = (conv, officials) => {
-    let data;
-    const { representative, senator, official } = officials;
-
-    if (official === 'house') {
-      data = representative;
-      data.branch = 'representative';
-    } else if (official === 'senate') {
-      data = senator;
-      data.branch = 'senator';
-    } else {
-      return conv.ask('Which branch are you interested in?');
-    }
-
-    conv.ask(text.DETAILS
-      .replace('{{official}}', data.formatName)
-      .replace('{{profession}}', data.profession)
-      .replace('{{education}}', data.education)
-      .replace('{{type}}', data.branch)
-      .replace('{{serviceStart}}', data.serviceStart)
-    );
-
-    return conv.ask(new BasicCard({
-      image: new Image({
-        url: data.image,
-        alt: data.formatName
-      }),
-      title: data.formatName,
-      subtitle: data.branch,
-      text: `**District**: ${data.district}\r\n\r\n` +
-        `**Counties**: ${data.counties}\r\n\r\n` +
-        `**Profession**: ${data.profession}\r\n\r\n` +
-        `**Education**: ${data.education}\r\n\r\n` +
-        `**email**: ${data.email}\r\n\r\n` +
-        `**cell**: ${data.cell}`,
-      buttons: [
-        new Button({
-          title: 'Legislation',
-          url: data.legislation
-        })
-      ]
-    }));
-  };
-
-  return new Promise((resolve, reject) => {
-    // get officials
-    let officials = contextHelper.getOfficials(conv);
-    // if null get location, then get officials
-    if (!officials) {
-      const districts = contextHelper.getDistricts(conv);
-
-      if (!districts) {
-        return getDistricts(conv)
-          .then((result) => {
-            officials = getSenatorRepFromDistrict(conv, result);
-
-            if (!('official' in officials)) {
-              console.log('missing official key');
-
-              officials.official = conv.user.storage.branch;
-              console.log(officials)
-            }
-
-            return resolve(returnLegislator(conv, officials));
-          })
-          .catch(reject);
-      }
-
-      officials = getSenatorRepFromDistrict(conv, districts);
-
-      if (!('official' in officials)) {
-        officials.official = conv.user.storage.branch;
-      }
-
-      return resolve(returnLegislator(conv, officials));
-    }
-
-    return resolve(returnLegislator(conv, officials));
-  });
-};
-
-const deabbrivate = (partyAbbr) => {
-  if (partyAbbr === 'D') {
-    return 'democrat'
   }
-
-  if (partyAbbr === 'R') {
-    return 'republican'
-  }
-
-  return partyAbbr;
-};
-
-const returnLegislators = (conv, districts) => {
-  console.log('legislature.returnLegislators');
-  console.log(districts);
 
   const { house, senate } = districts;
 
   conv.user.storage.senateDistrict = senate;
-  conv.user.storage.houseDistrict = house ;
+  conv.user.storage.houseDistrict = house;
 
   const { senator, representative } = getSenatorRepFromDistrict(conv, districts);
 
@@ -258,6 +153,81 @@ const returnLegislators = (conv, districts) => {
   ]));
 };
 
+exports.findSpecificLegislator = async (conv) => {
+  console.log('legislature.findSpecificLegislator');
+
+  // get officials
+  let officials = storage.getOfficials(conv);
+  // if null get location, then get officials
+  if (!officials) {
+    let districts = storage.getDistricts(conv);
+
+    if (!districts) {
+      districts = await district.getDistricts(conv);
+    }
+
+    officials = getSenatorRepFromDistrict(conv, districts);
+
+    if (!('official' in officials)) {
+      officials.official = conv.user.storage.branch;
+    }
+  }
+
+  let data;
+  const { representative, senator, official } = officials;
+
+  if (official === 'house') {
+    data = representative;
+    data.branch = 'representative';
+  } else if (official === 'senate') {
+    data = senator;
+    data.branch = 'senator';
+  } else {
+    return conv.ask('Which branch are you interested in?');
+  }
+
+  conv.ask(text.DETAILS
+    .replace('{{official}}', data.formatName)
+    .replace('{{profession}}', data.profession)
+    .replace('{{education}}', data.education)
+    .replace('{{type}}', data.branch)
+    .replace('{{serviceStart}}', data.serviceStart)
+  );
+
+  return conv.ask(new BasicCard({
+    image: new Image({
+      url: data.image,
+      alt: data.formatName
+    }),
+    title: data.formatName,
+    subtitle: data.branch,
+    text: `**District**: ${data.district}\r\n\r\n` +
+      `**Counties**: ${data.counties}\r\n\r\n` +
+      `**Profession**: ${data.profession}\r\n\r\n` +
+      `**Education**: ${data.education}\r\n\r\n` +
+      `**email**: ${data.email}\r\n\r\n` +
+      `**cell**: ${data.cell}`,
+    buttons: [
+      new Button({
+        title: 'Legislation',
+        url: data.legislation
+      })
+    ]
+  }));
+};
+
+const deabbrivate = (partyAbbr) => {
+  if (partyAbbr === 'D') {
+    return 'democrat'
+  }
+
+  if (partyAbbr === 'R') {
+    return 'republican'
+  }
+
+  return partyAbbr;
+};
+
 const getSenatorRepFromDistrict = (conv, districts) => {
   console.log('legislature.getSenatorRepFromDistrict');
   console.log(districts);
@@ -274,43 +244,3 @@ const getSenatorRepFromDistrict = (conv, districts) => {
 
   return { senator, representative };
 };
-
-const getDistricts = (conv) => {
-  console.log('legislature.getDistricts');
-
-  const location = contextHelper.getLocation(conv);
-
-  if (!location) {
-    return location.requestLocation(conv, 'To find your legislator');
-  }
-
-  const options = {
-    spatialReference: 4326,
-    geometry: `point:[${location.longitude},${location.latitude}]`
-  };
-
-  return agrc.search('sgid10.political.officialslookup', ['repdist', 'sendist'], options)
-    .then(result => {
-      if (result.message) {
-        return { error: result.message };
-      }
-
-      const senate = result.senate;
-      const house = result.house
-
-      conv.user.storage.senateDistrict = senate;
-      conv.user.storage.houseDistrict = house;
-
-      console.log(`returning senate: ${senate}. house: ${house}`);
-
-      return {
-        senate,
-        house
-      };
-    });
-};
-
-
-exports.findLegislators = findLegislators;
-
-exports.findSpecificLegislator = findSpecificLegislator;

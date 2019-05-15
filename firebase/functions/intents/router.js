@@ -4,7 +4,7 @@ const district = require('./district');
 const legislature = require('./legislature');
 const text = require('../config/text');
 
-module.exports = (conv) => {
+module.exports = async (conv) => {
   const where = conv.user.storage.intent;
 
   console.log(`user.storage.intent: ${where}`);
@@ -13,17 +13,17 @@ module.exports = (conv) => {
     case 'district': {
       console.log('routing to find districts');
 
-      return district.findDistricts(conv);
+      return await district.findDistricts(conv);
     }
     case 'legislature.mine': {
       console.log('routing to find legislators');
 
-      return legislature.findLegislators(conv);
+      return await legislature.findLegislators(conv);
     }
     case 'legislator.specific': {
       console.log('routing to specific legislator');
 
-      return legislature.findSpecificLegislator(conv);
+      return await legislature.findSpecificLegislator(conv);
     }
     default: {
       return conv.ask(text.WELCOME);

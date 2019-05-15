@@ -3,7 +3,7 @@
 const { Permission, Suggestions } = require('actions-on-google');
 const routeRequest = require('./router');
 
-exports.requestLocation = (conv, text) => {
+exports.requestLocation = async (conv, text) => {
   console.log('location.requestLocation');
   console.log(conv.user);
 
@@ -11,7 +11,7 @@ exports.requestLocation = (conv, text) => {
   if (conv.user.storage.location) {
     console.log('user has location, skipping');
 
-    return routeRequest(conv);
+    return await routeRequest(conv);
   }
 
   return conv.ask(new Permission({
@@ -21,7 +21,7 @@ exports.requestLocation = (conv, text) => {
 };
 
 exports.locationReceivedIntent = {
-  'location.got': (conv, _, confirmationGranted) => {
+  'location.got': async (conv, _, confirmationGranted) => {
     console.log('INTENT: location received');
 
     const { location } = conv.device;
@@ -40,6 +40,6 @@ exports.locationReceivedIntent = {
 
     console.log(conv.user);
 
-    return routeRequest(conv);
+    return await routeRequest(conv);
   }
 };

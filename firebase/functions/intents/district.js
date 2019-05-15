@@ -2,27 +2,27 @@
 
 const { Table, Suggestions } = require('actions-on-google');
 const agrc = require('../services/agrc');
-const contextHelper = require('../context')
+const storage = require('../storage')
 const location = require('./location');
 const text = require('../config/text');
 
 exports.districtIntent = {
-  'district.mine': async(conv) => {
+  'district.mine': async (conv) => {
     console.log('INTENT: what is my district');
 
     conv.user.storage.intent = 'district';
 
-    let districts = contextHelper.getDistricts(conv)
+    let districts = storage.getDistricts(conv)
 
     if (districts) {
       return sayDistrict(conv, districts.house, districts.senate);
     }
 
-    if (contextHelper.getLocation(conv)) {
+    if (storage.getLocation(conv)) {
       return await findDistricts(conv);
     }
 
-    return location.requestLocation(conv, 'To find your district');
+    return await location.requestLocation(conv, 'To find your district');
   }
 };
 
@@ -50,14 +50,24 @@ const sayDistrict = (conv, house, senate) => {
   return conv.ask(text.DISTRICT_FOLLOW);
 };
 
-const findDistricts = async (conv) => {
+exports.findDistricts = async (conv) => {
   console.log('district.findDistricts');
 
-  const location = contextHelper.getLocation(conv);
+  const { house, senate, error } = await this.getDistricts(conv);
+
+  if (error) {
+    return conv.ask(error);
+  }
+
+  return sayDistrict(conv, house, senate);
+};
+
+exports.getDistricts = async (conv) => {
+  const location = storage.getLocation(conv);
   console.log(location);
 
   if (!location) {
-    return location.requestLocation(conv, 'To find your district');
+    return await location.requestLocation(conv, 'To find your district');
   }
 
   const options = {
@@ -65,11 +75,10 @@ const findDistricts = async (conv) => {
     geometry: `point:[${location.longitude},${location.latitude}]`
   };
 
-  // TODO extra method from legislature.js
   const result = await agrc.search('sgid10.political.officialslookup', ['repdist', 'sendist'], options);
 
   if (result.message) {
-    return conv.ask(result.message);
+    return { error: result.message }
   }
 
   const senate = result.senate;
@@ -78,7 +87,6 @@ const findDistricts = async (conv) => {
   conv.user.storage.senateDistrict = senate;
   conv.user.storage.houseDistrict = house;
 
-  return sayDistrict(conv, house, senate);
-};
 
-exports.findDistricts = findDistricts;
+  return { senate, house };
+}

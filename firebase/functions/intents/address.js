@@ -1,18 +1,17 @@
 'use strict';
 const agrc = require('../services/agrc');
 const routeRequest = require('./router');
-const contextConfig = require('../config/config');
 const util = require('../util');
 
 module.exports = {
   'address.get': (conv) => {
     console.log('INTENT: get address');
 
-    conv.contexts.delete(contextConfig.context.GEOCODING);
+    conv.user.storage.addressParts = null;
 
     return conv.ask('Ok what is the address?');
   },
-  'address.got': (conv, { location: inputAddress }) => {
+  'address.got': async (conv, { location: inputAddress }) => {
     console.log('INTENT: got address');
     // TODO: Should we be using Place and formattedAddress?
     // const { Place } = require('actions-on-google');
@@ -24,17 +23,15 @@ module.exports = {
     //   conv.ask(new Place(options));
     // });
 
+    if (conv.user.storage.location) {
+      return await routeRequest(conv);
+    }
+
     let addressParts = {};
-    const context = conv.contexts.get(contextConfig.context.GEOCODING);
+    const parts = conv.user.storage.addressParts;
 
-    if (context && 'parameters' in context) {
-      console.log('reading context');
-      const contextParts = context.parameters.parts;
-
-      console.log('context.location:');
-      console.log(contextParts);
-
-      addressParts = merge(contextParts, inputAddress);
+    if (parts) {
+      addressParts = merge(parts, inputAddress);
     } else {
       addressParts = inputAddress;
     }
@@ -42,9 +39,7 @@ module.exports = {
     console.log('merged object:');
     console.log(addressParts);
 
-    conv.contexts.set(contextConfig.context.GEOCODING, contextConfig.lifespan.LONG, {
-      parts: addressParts
-    });
+    conv.user.storage.addressParts = addressParts;
 
     if (!addressParts['street-address']) {
       return conv.ask(util.randomize(
@@ -73,19 +68,16 @@ module.exports = {
     // conv.ask(`Should I look for ${addressParts['street-address']}, ${zone}?`);
 
     const zone = addressParts.city || addressParts['zip-code'] || addressParts['subadmin-area'];
-    return agrc.geocode({
+
+    const result = await agrc.geocode({
       street: addressParts['street-address'],
       zone: zone,
       spatialReference: 4326
-    }).then((result) => {
-      conv.contexts.set(contextConfig.context.GEOCODED, contextConfig.lifespan.LONG, {
-        point: result
-      });
-
-      conv.user.storage.location = result;
-
-      return routeRequest(conv);
     });
+
+    conv.user.storage.location = result;
+
+    return await routeRequest(conv);
   }
 };
 
