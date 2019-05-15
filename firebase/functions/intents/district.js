@@ -19,7 +19,7 @@ exports.districtIntent = {
     }
 
     if (storage.getLocation(conv)) {
-      return await findDistricts(conv);
+      return await this.findDistricts(conv);
     }
 
     return await location.requestLocation(conv, 'To find your district');
